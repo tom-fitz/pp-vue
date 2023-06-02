@@ -11,9 +11,8 @@ const valid = ref(false)
 
 let snackbar = ref(false);
 
-const login = () => {
-    console.log("user: ", user.value)
-    store.loginUser(user.value)
+const login = async () => {
+    await store.loginUser(user.value)
     snackbar.value = true;
 }
 
