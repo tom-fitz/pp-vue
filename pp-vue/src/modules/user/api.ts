@@ -30,7 +30,7 @@ const registerUser = (user: User): Promise<fbUser> =>
 const loginUser = (user: User): Promise<fbUser> =>
   signInWithEmailAndPassword(getAuth(), user.email, user.password ?? "")
     .then((data: UserCredential) => {
-      console.log("spiData: " + data.user);
+      console.log("spiData: " + data);
       return data.user;
     })
     .catch((error) => {
@@ -39,6 +39,8 @@ const loginUser = (user: User): Promise<fbUser> =>
     });
 
 const addUser = async (user: User): Promise<void> => {
+  // const fbAuth = getAuth();
+  // user.password = fbAuth.users[0].passwordHash
   await fetch(`${dataBaseUrl}/users.json`, {
     method: "POST",
     headers: {

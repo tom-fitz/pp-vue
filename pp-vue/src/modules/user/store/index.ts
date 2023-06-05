@@ -41,8 +41,8 @@ export const useUserStore = defineStore("userStore", {
       this.loading = true;
       try {
         const returnedUser = await api.loginUser(user);
-        // const dbUser = api.getUser(returnedUser.uid);
-        console.log("r user:" + returnedUser)
+        const dbUser = api.getUser(returnedUser.uid);
+        console.log("r user:" + dbUser)
         this.successMsg = `Successfully logged in user ${user.email}`;
       } catch (err) {
         console.log("action err:" + err)

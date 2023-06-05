@@ -7,12 +7,18 @@
     >
       <v-row class="h-100 flex-column" style="margin:0!important;">
         <v-col cols="auto" :width="80" class="align-items-center pt-6 pb-6" style="background-color:#7C5DF9;border-bottom-right-radius:15px;border-top-right-radius:15px;">
+          <!-- <v-img
+            :width="35"
+            aspect-ratio="16/9"
+            cover
+            class="d-block text-center mx-auto"
+            src="./assets/logo.svg"
+          ></v-img> -->
           <v-img
             :width="35"
             aspect-ratio="16/9"
             cover
             class="d-block text-center mx-auto"
-            src="../assets/logo.svg"
           ></v-img>
         </v-col>
         <v-spacer />

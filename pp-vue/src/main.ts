@@ -4,11 +4,9 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
 import { createPinia } from 'pinia'
-import { initializeApp, type FirebaseOptions } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
 
-console.log("apiKey:" + import.meta.env.VITE_FB_API_KEY);
-
-const fbConfig: FirebaseOptions = {
+initializeApp({
   apiKey: import.meta.env.VITE_FB_API_KEY,
   authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FB_PROJECT_ID,
@@ -16,9 +14,7 @@ const fbConfig: FirebaseOptions = {
   messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
   appId: import.meta.env.VITE_FB_APP_ID,
   measurementId: import.meta.env.VITE_FB_MEASUREMENT_ID
-}
-
-initializeApp(fbConfig)
+})
 
 loadFonts()
 

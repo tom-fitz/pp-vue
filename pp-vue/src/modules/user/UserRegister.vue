@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { User } from '../user/User';
+import { User } from './User';
 import { useUserStore } from './store';
+import { ref } from 'vue';
 
 const store = useUserStore();
 
-const user = ref(new User())
+const user = ref(new User());
 
-const valid = ref(false)
+const valid = ref(false);
 
-let snackbar = ref(false);
-
-const login = async () => {
-    await store.loginUser(user.value)
-    snackbar.value = true;
-}
-
-const timeout = ref(3000)
-
+const register = async () => {
+    await store.registerUser(user.value)
+};
 </script>
 <template>
     <v-card color="transparent" elevation="0" width="800">
-        <v-card-title class="text-h4">Login</v-card-title>
+        <v-card-title class="text-h4">Register</v-card-title>
         <v-form v-model="valid">
             <v-container width="100%">
                 <v-row>
@@ -51,7 +45,7 @@ const timeout = ref(3000)
                 </v-row>
                 <v-row class="ma-0 pa-0">
                     <v-col cols="auto">
-                        <h6>New User? <router-link to="/register">Register here</router-link>.</h6>
+                        <h6>Already registered? <router-link to="/login">Login here</router-link>.</h6>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -64,29 +58,13 @@ const timeout = ref(3000)
                             variant="flat" 
                             class="text-none"
                             style="color:#1F213A!important;"
-                            @click.stop="login()"
+                            @click.stop="register()"
                             data-test="user-login"
                             :loading="store.loading"
-                        >Login</v-btn>
+                        >Register</v-btn>
                     </v-col>
                 </v-row>
             </v-container>
         </v-form>
     </v-card>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="timeout"
-    >
-      {{ store.successMsg }}
-
-      <template v-slot:actions>
-        <v-btn
-          color="blue"
-          variant="text"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
 </template>
