@@ -41,10 +41,11 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   if (to.meta?.isAuth == true) {
-    const user = await getCurrentUser()
-    if (!user) {
-      next('/login')
-    }
+    await getCurrentUser();
+    // const user = await getCurrentUser()
+    // if (!user) {
+    //   console.log("user not logged in: ", user)
+    // }
   }
   next();
 })
