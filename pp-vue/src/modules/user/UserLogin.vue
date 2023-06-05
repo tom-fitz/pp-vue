@@ -2,18 +2,22 @@
 import { ref } from 'vue';
 import { User } from '../user/User';
 import { useUserStore } from './store';
+import { useRouter } from 'vue-router';
 
 const store = useUserStore();
 
 const user = ref(new User())
 
-const valid = ref(false)
+const valid = ref(false);
+
+const router = useRouter();
 
 let snackbar = ref(false);
 
 const login = async () => {
-    await store.loginUser(user.value)
+    await store.loginUser(user.value);
     snackbar.value = true;
+    router.push({ name: 'program-dashboard' })
 }
 
 const timeout = ref(3000)

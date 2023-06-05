@@ -64,7 +64,6 @@ const getUser = (userId: string): Promise<User> =>
   })
     .then((response) => response.json())
     .then((response) => {
-      console.log("user: ", response);
       return response;
     })
     .catch((error) => error);
