@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getAuth } from 'firebase/auth'
 import { getCurrentUser, fbAuth } from '../plugins/firebase'
+import { useUserStore } from '@/modules/user/store'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,8 +15,8 @@ const router = createRouter({
       name: 'login',
       component: () => import('../modules/user/UserLogin.vue'),
       meta: {
-        title: 'Login',
         isAuth: false,
+        isAdmin: false,
       }
     },
     {
@@ -23,8 +24,8 @@ const router = createRouter({
       name: 'register',
       component: () => import('../modules/user/UserRegister.vue'),
       meta: {
-        title: 'Register',
         isAuth: false,
+        isAdmin: false,
       }
     },
     {
@@ -32,17 +33,27 @@ const router = createRouter({
       name: 'program-dashboard',
       component: () => import('../modules/program/ProgramDashboard.vue'),
       meta: {
-        title: 'Program Dashboard',
         isAuth: true,
+        isAdmin: true,
+      }
+    },
+    {
+      path: '/program',
+      name: 'program-list',
+      component: () => import('../modules/program/ProgramList.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: false,
       }
     }
   ]
 })
 
 router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
   if (to.meta?.isAuth == true) {
-    await getCurrentUser();
-    // const user = await getCurrentUser()
+    const user = await getCurrentUser()
+    console.log("user: ", user)
     // if (!user) {
     //   console.log("user not logged in: ", user)
     // }
