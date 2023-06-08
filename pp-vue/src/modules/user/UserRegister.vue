@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router';
 import { User } from './User';
 import { useUserStore } from './store';
 import { ref } from 'vue';
@@ -11,6 +12,11 @@ const valid = ref(false);
 
 const register = async () => {
     await store.registerUser(user.value)
+    if (store.user.isAdmin) {
+        router.push({ name: 'program-dashboard' })
+    } else {
+        router.push({ name: 'program-list' })
+    }
 };
 </script>
 <template>
