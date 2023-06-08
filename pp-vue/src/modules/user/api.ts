@@ -8,18 +8,41 @@ import {
   signOut,
 } from "firebase/auth";
 
+import {  } from 'firebase/functions'
+
 interface IApi {
   registerUser: (user: User) => Promise<fbUser>;
   addUser: (user: User) => Promise<void>;
   loginUser: (user: User) => Promise<fbUser>;
   getUser: (userId: string) => Promise<User>;
   signOutUser: () => Promise<void>;
+  listUsers: () => Promise<User[]>;
 }
 
 const dataBaseUrl: string = import.meta.env.VITE_FB_DB_URL;
 
+const listUsers = async (): Promise<User[]> => {
+  return await fetch(`${dataBaseUrl}/users.json`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      const users: User[] = [];
+      Object.keys(response).forEach((key: string) => {
+        users.push(response[key])
+      });
+      console.log("users:", users);
+      return users;
+    })
+    .catch((error) => error);
+}
+
 const registerUser = (user: User): Promise<fbUser> =>
-  createUserWithEmailAndPassword(getAuth(), user.email, user.password ?? "")
+  createUserWithEmailAndPassword(getAuth(), user.email ?? "", user.password ?? "")
     .then((data: UserCredential) => {
       return data.user;
     })
@@ -28,7 +51,7 @@ const registerUser = (user: User): Promise<fbUser> =>
     });
 
 const loginUser = (user: User): Promise<fbUser> =>
-  signInWithEmailAndPassword(getAuth(), user.email, user.password ?? "")
+  signInWithEmailAndPassword(getAuth(), user.email ?? "", user.password ?? "")
     .then((data: UserCredential) => {
       console.log("spiData: " + data);
       return data.user;
@@ -81,6 +104,7 @@ export const api: IApi = {
   loginUser,
   getUser,
   signOutUser,
+  listUsers
 };
 
 export default api;

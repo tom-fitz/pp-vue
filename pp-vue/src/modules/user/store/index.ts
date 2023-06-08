@@ -16,6 +16,7 @@ export const useUserStore = defineStore("userStore", {
     successMsg: "",
     loading: false,
     user: new User(),
+    userList: [] as User[],
   }),
   getters: {
     [Get.GetUser]: (state) => state.user,
@@ -39,8 +40,19 @@ export const useUserStore = defineStore("userStore", {
       this.loading = true;
       try {
         const returnedUser = await api.loginUser(user);
-        // const dbUser = api.getUser(returnedUser.uid);
         this.successMsg = `Successfully logged in user ${returnedUser.email}`;
+      } catch (err) {
+        this.errorMsg = err;
+      } finally {
+        this.loading = false;
+      }
+    },
+    async listUsers(): Promise<void> {
+      this.resetMessages();
+      this.loading = true;
+      try {
+        const users = await api.listUsers();
+        this.userList = [...users];
       } catch (err) {
         this.errorMsg = err;
       } finally {

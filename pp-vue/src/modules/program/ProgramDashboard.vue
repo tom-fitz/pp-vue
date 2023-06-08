@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { mdiChevronRight, mdiCircleSmall, mdiPlus } from "@mdi/js";
 import { ref } from 'vue';
+import { Program } from "./Program";
+import CreateEditProgram from "@/components/CreateEditProgram.vue";
+import { useUserStore } from "../user/store";
+import { User } from "../user/User";
+
+const userStore = useUserStore();
+
+userStore.listUsers();
 
 const drawer = ref();
+
+const program = ref(new Program());
 </script>
 
 <template>
@@ -10,7 +20,6 @@ const drawer = ref();
         <v-row>
             <v-col cols="auto">
                 <v-card-title class="text-h3">Program Dashboard</v-card-title>
-                <!-- <v-card-subtitle class="text-h6">{{ subTitle }}</v-card-subtitle> -->
             </v-col>
             <v-spacer></v-spacer>
             <v-col cols="auto">
@@ -79,9 +88,16 @@ const drawer = ref();
         temporary
         color="#141625"
         style="border-top-right-radius:15px;border-bottom-right-radius:15px"
-        :width="750"
+        :width="1000"
         class="pa-10"
     >
+    <CreateEditProgram :program="(program as Program)" :user-list="(userStore.userList as User[])"></CreateEditProgram>
         <!-- <CreateEdit :invoice="invoice as Invoice" @drawerClose="drawer = false" @newLineItem="newItem()" @remove-line-item="removeLineItem" /> -->
     </v-navigation-drawer>
 </template>
+<style scoped>
+.input-ph {
+    padding-top: 5px;
+    margin-bottom: 55px;
+}
+</style>
