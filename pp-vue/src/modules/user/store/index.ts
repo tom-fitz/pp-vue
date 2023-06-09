@@ -52,7 +52,13 @@ export const useUserStore = defineStore("userStore", {
       this.loading = true;
       try {
         const users = await api.listUsers();
-        this.userList = [...users];
+        const ls: User[] = [];
+        users.forEach((u: User) => {
+          if (u.id !== this.user.id) {
+            ls.push(u);
+          }
+        })
+        this.userList = [...ls];
       } catch (err) {
         this.errorMsg = err;
       } finally {

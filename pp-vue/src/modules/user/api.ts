@@ -8,8 +8,6 @@ import {
   signOut,
 } from "firebase/auth";
 
-import {  } from 'firebase/functions'
-
 interface IApi {
   registerUser: (user: User) => Promise<fbUser>;
   addUser: (user: User) => Promise<void>;
@@ -35,7 +33,6 @@ const listUsers = async (): Promise<User[]> => {
       Object.keys(response).forEach((key: string) => {
         users.push(response[key])
       });
-      console.log("users:", users);
       return users;
     })
     .catch((error) => error);
@@ -62,8 +59,6 @@ const loginUser = (user: User): Promise<fbUser> =>
     });
 
 const addUser = async (user: User): Promise<void> => {
-  // const fbAuth = getAuth();
-  // user.password = fbAuth.users[0].passwordHash
   await fetch(`${dataBaseUrl}/users.json`, {
     method: "POST",
     headers: {

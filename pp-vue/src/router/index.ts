@@ -56,6 +56,9 @@ router.beforeEach(async (to, from) => {
   const store = useUserStore();
   if (to.meta?.isAuth == true) {
     const currentUser = await getCurrentUser();
+    // redirect to login screen if user is not already logged in and the route requires auth.
+    if (!currentUser && to.meta.isAuth && to.name !== 'login') return { name: 'login' };
+    
     const newUser = new User();
 
     newUser.set(currentUser as fbUser); 
@@ -66,8 +69,7 @@ router.beforeEach(async (to, from) => {
     // as a user is being registered/logged in. Put the data on the token and
     // then parse it out here.
 
-    // redirect to login screen if user is not already logged in and the route requires auth.
-    if (!currentUser && to.meta.isAuth && to.name !== 'login') return { name: 'login' };
+    
     // check if user is not an admin but trying to access an admin route. Cancel the route and set an error message.
     if (to.meta.isAdmin && !newUser.isAdmin) {
       await store.setErrorMessage(`User ${newUser.email} does not have permission to access ${to.name?.toString()}. Contact admin.`);

@@ -3,6 +3,7 @@ import { Program } from '@/modules/program/Program';
 import { ref, type PropType } from 'vue'
 import { useProgramStore } from '@/modules/program/store';
 import { User } from '@/modules/user/User';
+import { storeToRefs } from 'pinia';
 
 const programStore = useProgramStore();
 
@@ -17,16 +18,22 @@ const props = defineProps({
 });
 
 const program = ref(props.program).value;
+
+const createProgram = () => {
+    program.create();
+    programStore.createProgram(program);
+    emit('drawerClose');
+}
+
 </script>
 <template>
     <v-card color="transparent" elevation="0">
         <v-card-title class="text-h4">New Program</v-card-title>
-        <!-- <v-card-subtitle class="text-h6 pt-8" style="color:#7C5DF9!important"><strong>Bill From</strong></v-card-subtitle> -->
         <v-form v-model="valid" :min-width="600">
             <v-container justify="center">
                 <v-row>
                     <v-col
-                    cols="12"
+                    cols="6"
                     >
                         <span class="input-ph">Name</span><br />
                         <v-text-field
@@ -36,9 +43,48 @@ const program = ref(props.program).value;
                             variant="outlined"
                         ></v-text-field>
                     </v-col>
+                    <v-col cols="6">
+                        <span class="input-ph">Who is it for?</span><br />
+                        <v-select
+                            v-model="program.uid"
+                            label="Select User"
+                            :items="props.userList"
+                            item-value="id"
+                            item-title="email"
+                            required
+                            class="pt-4"
+                            dense
+                        >
+                        </v-select>
+                    </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="4">
+                    <v-col
+                    cols="6"
+                    >
+                        <span class="input-ph">Completion title</span><br />
+                        <v-text-field
+                            v-model="program.completionTitle"
+                            required
+                            class="pt-4"
+                            variant="outlined"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="6"
+                    >
+                        <span class="input-ph">Duration (weeks)</span><br />
+                        <v-text-field
+                            v-model="program.duration"
+                            required
+                            class="pt-4"
+                            variant="outlined"
+                            type="number"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12">
                         <span class="input-ph">Description</span><br />
                         <v-text-field
                             v-model="program.description"
@@ -49,180 +95,98 @@ const program = ref(props.program).value;
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-card-subtitle class="text-h6 pt-8" style="color:#7C5DF9!important"><strong>Bill To</strong></v-card-subtitle>
-                </v-row>
-                <!-- <v-row>
-                    <v-col
-                    cols="12"
-                    >
-                        <span class="input-ph">Client Name</span><br />
-                        <v-text-field
-                            v-model="program.clientName"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-client-name"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    >
-                        <span class="input-ph">Client Email</span><br />
-                        <v-text-field
-                            v-model="program.clientEmail"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-client-email"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    >
-                        <span class="input-ph">Street Address</span><br />
-                        <v-text-field
-                            v-model="program.clientAddress.street"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-clientAdd-street"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="4">
-                        <span class="input-ph">City</span><br />
-                        <v-text-field
-                            v-model="program.clientAddress.city"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-clientAdd-city"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <span class="input-ph">Post Code</span><br />
-                        <v-text-field
-                            v-model="program.clientAddress.postCode"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-clientAdd-postCode"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <span class="input-ph">Country</span><br />
-                        <v-text-field
-                            v-model="program.clientAddress.country"
-                            required
-                            class="pt-4"
-                            variant="outlined"
-                            data-test="invoice-clientAdd-country"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="6"
-                    >
-                        <span class="input-ph">Invoice Date</span>
-                        <v-text-field 
-                            type="date" 
-                            v-model="program.createdAt"
-                            data-test="invoice-createdAt"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <span class="inpout-ph">Payment Terms</span>
-                        <v-select
-                            single-line
-                            :items="paymentTermsItems"
-                            v-model="program.paymentTerms"
-                            item-title="name"
-                            item-value="val"
-                            data-test="invoice-payment-terms"
-                        >
-                        </v-select>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <span class="input-ph">Project Description</span>
-                        <v-text-field
-                            v-model="program.description"
-                            placeholder="e.g. Graphic Desgin Service"
-                            data-test="invoice-description"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <span class="text-h5">Item List</span>
-                </v-row>
-                <v-row>
-                    <v-col cols="5">
-                        <span>Item Name</span>
-                    </v-col>
-                    <v-col cols="2">
-                        <span>Qty.</span>
-                    </v-col>
-                    <v-col cols="2">
-                        <span>Price</span>
-                    </v-col>
-                    <v-col cols="3">
-                        <span>Total</span>
-                    </v-col>
+                    <v-card-subtitle class="text-h6 pt-8" style="color:#7C5DF9!important"><strong>Exercises</strong></v-card-subtitle>
                 </v-row>
                 <v-row
-                    v-for="(item, idx) in program.items"
+                    v-for="(item, idx) in program.exercises"
                     :key="idx"
                 >
-                    <v-col cols="5">
-                        <v-text-field
-                            v-model="item.name"
-                            variant="outlined"
-                            type="string"
-                            :data-test="`invoice-item-name-${idx}`"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="2">
-                        <v-text-field
-                            v-model.number="item.quantity"
-                            variant="outlined"
-                            type="number"
-                            :data-test="`invoice-item-quantity-${idx}`"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="2">
-                        <v-text-field
-                            v-model.number="item.price"
-                            variant="outlined"
-                            type="number"
-                            :data-test="`invoice-item-price-${idx}`"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="2">
-                        <v-text-field
-                            :value="program.items[idx].quantity * program.items[idx].price"
-                            variant="outlined"
-                            :data-test="`invoice-item-total-${idx}`"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="1">
-                        <v-btn
-                            block
-                            rounded="xl"
-                            size="large"
-                            color="#7C5DF9"
-                            variant="flat" 
-                            class="text-none"
-                            @click.stop="program.removeItem(idx)"
-                            :data-test="`invoice-item-remove-${idx}`"
-                        >X</v-btn>
-                    </v-col>
+                    <v-card color="transparent" elevation="0" width="100%" class="ex-card pa-4 ma-4">
+                        <v-row>
+                            <v-col cols="11">
+                                <v-row>
+                                    <v-col cols="3">
+                                        <span>Exercise Name</span>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <span>Target</span>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <span>Sets X Reps</span>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <span>Load</span>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                            v-model="item.name"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                            v-model="item.target"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                            v-model="item.setsXReps"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="3">
+                                        <v-text-field
+                                            v-model="item.load"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <span>Video URL</span>
+                                    </v-col>
+                                    <v-col cols="6">
+                                        <span>Notes</span>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <v-text-field
+                                            v-model="item.videoUri"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="6">
+                                        <v-text-field
+                                            v-model="item.notes"
+                                            variant="outlined"
+                                            type="string"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>                      
+                            </v-col>
+                            <v-col cols="1" align="center" justify="center">
+                                <v-btn
+                                    block
+                                    rounded="xl"
+                                    size="large"
+                                    color="#7C5DF9"
+                                    variant="flat" 
+                                    class="text-none"
+                                    :disabled="idx === 0"
+                                    @click.stop="program.removeExercise(idx)"
+                                >X</v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-card>
                 </v-row>
                 <v-row>
                     <v-col cols="12">
@@ -233,52 +197,36 @@ const program = ref(props.program).value;
                         color="#1F213A"
                         variant="flat" 
                         class="text-none"
-                        @click.stop="newItem()"
+                        @click.stop="program.addExercise()"
                         data-test="invoice-item-add"
-                        >+ Add New Item</v-btn>
+                        >+ Add New Exercise</v-btn>
                     </v-col>
                 </v-row>
-                <v-row class="mt-10">
-                    <v-col cols="2">
+                <v-row>
+                    <v-spacer></v-spacer>
+                    <v-col cols="6">
                         <v-btn
                         block
                         rounded="xl"
                         size="large"
-                        color="#FFFFFF"
+                        color="#1F213A"
                         variant="flat" 
                         class="text-none"
-                        style="color:#1F213A!important;"
-                        @click.stop="discard()"
-                        data-test="invoice-discard"
-                        >Discard</v-btn>
+                        @click.stop="createProgram()"
+                        >+ Add New Program</v-btn>
                     </v-col>
-                    <v-col cols="2"></v-col>
-                    <v-col cols="4">
-                        <v-btn
-                        block
-                        rounded="xl"
-                        size="large"
-                        color="#373B54"
-                        variant="flat" 
-                        class="text-none"
-                        @click.stop="saveInvoice(invoice)"
-                        data-test="invoice-save-as-draft"
-                        >Save as Draft</v-btn>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-btn
-                        block
-                        rounded="xl"
-                        size="large"
-                        color="#7C5DF9"
-                        variant="flat" 
-                        class="text-none"
-                        @click.stop="isEdit ? updateInvoice(invoice) : createInvoice(invoice)"
-                        data-test="invoice-save-send"
-                        >Save &amp; Send</v-btn>
-                    </v-col>
-                </v-row> -->
+                </v-row>
             </v-container>
         </v-form>
     </v-card>
 </template>
+<style scoped>
+.ex-card {
+    border: 1px solid #4c4c52 !important;
+}
+
+.input-ph {
+    padding-top: 5px;
+    margin-bottom: 55px;
+}
+</style>

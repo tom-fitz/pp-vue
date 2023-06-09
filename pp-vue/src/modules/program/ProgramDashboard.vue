@@ -91,13 +91,6 @@ const program = ref(new Program());
         :width="1000"
         class="pa-10"
     >
-    <CreateEditProgram :program="(program as Program)" :user-list="(userStore.userList as User[])"></CreateEditProgram>
-        <!-- <CreateEdit :invoice="invoice as Invoice" @drawerClose="drawer = false" @newLineItem="newItem()" @remove-line-item="removeLineItem" /> -->
+    <CreateEditProgram :program="(program as Program)" :user-list="(userStore.userList as User[])" @drawer-close="drawer = false"></CreateEditProgram>
     </v-navigation-drawer>
 </template>
-<style scoped>
-.input-ph {
-    padding-top: 5px;
-    margin-bottom: 55px;
-}
-</style>
