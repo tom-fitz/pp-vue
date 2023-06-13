@@ -35,14 +35,16 @@ export const useUserStore = defineStore("userStore", {
         this.loading = false;
       }
     },
-    async loginUser(user: User): Promise<void> {
+    async loginUser(user: User): Promise<string> {
       this.resetMessages();
       this.loading = true;
       try {
         const returnedUser = await api.loginUser(user);
         this.successMsg = `Successfully logged in user ${returnedUser.email}`;
+        return returnedUser.uid;
       } catch (err) {
         this.errorMsg = err;
+        return "";
       } finally {
         this.loading = false;
       }

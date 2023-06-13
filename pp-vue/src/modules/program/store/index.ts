@@ -2,10 +2,6 @@ import { Program } from '../Program'
 import { defineStore } from 'pinia'
 import api from '../api'
 
-export const Get = {
-    GetPrograms: 'getPrograms'
-}
-
 export const useProgramStore = defineStore("programStore", {
     state: () => ({
         errorMsg: {} as unknown,
@@ -14,7 +10,7 @@ export const useProgramStore = defineStore("programStore", {
         programs: [] as Program[]
     }),
     getters: {
-        [Get.GetPrograms]: (state) => state.programs,
+        getPrograms: (state) => state.programs,
     },
     actions: {
         async createProgram (program: Program): Promise<void> {
@@ -27,5 +23,16 @@ export const useProgramStore = defineStore("programStore", {
                 this.loading = false;
             }
         },
+        async getProgramsByUID (uid: string): Promise<void> {
+            this.loading = true;
+            try {
+                const programs = await api.getProgramsByUID(uid);
+                this.programs = [...programs];
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        }
     }
 });

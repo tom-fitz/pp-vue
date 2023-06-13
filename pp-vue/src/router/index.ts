@@ -41,7 +41,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/program',
+      path: '/program/:uid',
       name: 'program-list',
       component: () => import('../modules/program/ProgramList.vue'),
       meta: {

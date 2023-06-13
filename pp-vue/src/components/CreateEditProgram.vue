@@ -3,13 +3,12 @@ import { Program } from '@/modules/program/Program';
 import { ref, type PropType } from 'vue'
 import { useProgramStore } from '@/modules/program/store';
 import { User } from '@/modules/user/User';
-import { storeToRefs } from 'pinia';
 
 const programStore = useProgramStore();
 
 const valid = ref(false);
 
-const emit = defineEmits(['drawerClose'])
+const emit = defineEmits(['drawerClose']);
 
 const props = defineProps({
     program: { type: Object as PropType<Program>, required: true },
