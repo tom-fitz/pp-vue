@@ -3,6 +3,7 @@ import { type User as fbUser } from 'firebase/auth'
 import { getCurrentUser } from '../plugins/firebase'
 import { useUserStore } from '@/modules/user/store'
 import { User } from '../modules/user/User'
+import { mdiTruckDelivery } from '@mdi/js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,15 @@ const router = createRouter({
       path: '/program/:uid',
       name: 'program-list',
       component: () => import('../modules/program/ProgramList.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: false,
+      }
+    },
+    {
+      path: '/program/:uid/:id',
+      name: 'program-view',
+      component: () => import('../modules/program/ProgramView.vue'),
       meta: {
         isAuth: true,
         isAdmin: false,

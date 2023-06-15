@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '../user/store';
 import { useRoute } from 'vue-router';
-// import { mdiChevronRight, mdiCircleSmall } from "@mdi/js";
+import { mdiChevronRight, mdiCircleSmall } from "@mdi/js";
 import { ref, onMounted, computed } from 'vue';
 import { useProgramStore } from './store';
 
@@ -18,37 +18,81 @@ onMounted(() => {
 const programs = computed(() => programStore.programs);
 
 
-// const rightArrow = ref(mdiChevronRight)
+const rightArrow = ref(mdiChevronRight);
+
+const trip = ref({
+        name: '',
+        location: null,
+        start: null,
+        end: null,
+})
 
 // const statusCircle = ref(mdiCircleSmall);
 
 </script>
 <template>
-    <v-row 
-        v-for="(item, idx) in programs"
-        :key="item.id"
-        class="mb-4 pt-2 pb-2"
-        :data-test="`invoice-${idx}`"
-        style="background-color:#1F213A;border-radius:25px;color:#FFFFFF"
-    >
-        <v-col cols="2" style="text-align:center">
-        <strong>{{ item.name }}</strong>
-        </v-col>
-        <v-col cols="3" style="text-align:left">{{ `# of exercises: ${item.exercises.length}` }}</v-col>
-        <!-- <v-col cols="2" style="text-align:left">{{ item.clientName }}</v-col>
-        <v-col cols="2" style="text-align:right"><strong>${{ item.total }}</strong></v-col>
-        <v-col cols="2" style="text-align:center">
-        <v-chip
-            :color="statusColor(item.status)"
-        ><v-icon start :icon="statusCircle" size="x-large" :color="statusColor(item.status)"></v-icon>{{ item.status }}</v-chip>
-        </v-col>
-        <v-col cols="1">
-        <v-btn
-            variant="plain"
-            density="compact"
-            @click.stop="viewInvoice(item.id)"
-            :data-test="`invoice-view-${idx}`"
-        ><v-icon :icon="rightArrow" size="x-large" color="#7C5DF9"/></v-btn>
-        </v-col> -->
+    <v-row>
+        <v-col cols="auto" class="pt-4 pb-4 pl-8"><h2>Current Programs</h2></v-col>
     </v-row>
+    <v-expansion-panels class="my-4">
+      <v-expansion-panel
+        v-for="(item, idx) in programs"
+        :key="idx"
+      >
+        <v-expansion-panel-title>
+            <template v-slot:default="{}">
+            <v-row no-gutters>
+                <v-col cols="4" class="d-flex justify-start">
+                {{ item.name }}
+                </v-col>
+                <!-- <v-col
+                cols="8"
+                class="text-grey"
+                >
+                <v-fade-transition leave-absolute>
+                    <span
+                    v-if="expanded"
+                    key="0"
+                    >
+                    Enter a name for the trip
+                    </span>
+                    <span
+                    v-else
+                    key="1"
+                    >
+                    {{ `Hello ${+1}` }}
+                    </span>
+                </v-fade-transition>
+                </v-col> -->
+            </v-row>
+            </template>
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+            <v-row>
+                <v-col cols="2">{{ item.name }}</v-col>
+                <v-col cols="2">{{ 'Target' }}</v-col>
+                <v-col cols="2">{{ 'Sets X Reps' }}</v-col>
+                <v-col cols="2">{{ 'Load' }}</v-col>
+                <v-col cols="2">{{ 'Reference Video' }}</v-col>
+                <v-col cols="2">{{ item.completionTitle }}</v-col>
+            </v-row>
+            <template v-if="item.description !== ''">
+                <v-row>
+                    <v-col cols="10">{{ item.description }}</v-col>
+                    <v-col cols="2">{{ 'Weekly input goes here:' }}</v-col>
+                </v-row>
+            </template>
+            <v-row
+                v-for="(ex, i) in item.exercises"
+                :key="i"
+            >
+                <v-col cols="2">{{ ex.name }}</v-col>
+                <v-col cols="2">{{ ex.target }}</v-col>
+                <v-col cols="2">{{ ex.setsXReps }}</v-col>
+                <v-col cols="2">{{ ex.load }}</v-col>
+                <v-col cols="2">{{ ex.videoUri }}</v-col>
+            </v-row>
+        </v-expansion-panel-text>
+        </v-expansion-panel>
+    </v-expansion-panels>
 </template>
