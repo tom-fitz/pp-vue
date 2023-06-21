@@ -106,12 +106,19 @@ const setDaysCompleted = (program: Program): DayCompletion[] => {
         <v-expansion-panel-text>
             <template v-if="item.description !== ''">
                 <v-row>
-                    <v-col cols="8">{{ item.description }}</v-col>
+                    <v-col cols="4">{{ item.description }}</v-col>
                     <v-col 
                         cols="1"
                         v-for="(com, index) in item.daysCompleted"
                         :key="index"
-                    >{{ logger(com) }}: <v-text-field type="number" v-model="com.days"></v-text-field></v-col>
+                    >
+                        <v-text-field 
+                            class="ma-0 pa-0" 
+                            type="number" 
+                            v-model="com.days"
+                            :label="com.title"
+                        ></v-text-field>
+                    </v-col>
                 </v-row>
             </template>
             <v-data-table

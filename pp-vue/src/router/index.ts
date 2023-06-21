@@ -3,7 +3,6 @@ import { type User as fbUser } from 'firebase/auth'
 import { getCurrentUser } from '../plugins/firebase'
 import { useUserStore } from '@/modules/user/store'
 import { User } from '../modules/user/User'
-import { mdiTruckDelivery } from '@mdi/js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

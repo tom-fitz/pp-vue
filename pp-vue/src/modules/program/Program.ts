@@ -11,17 +11,6 @@ export class Program {
         public completionTitle: string = "",
     ){}
 
-    // setCompletedMap(): Map<string, number> {
-    //     const completedMap = new Map()
-    //     if (this.duration) {
-    //         for (let x = 1; x <= this.duration; x++) {
-    //             completedMap.set(`WK${x}`, 0);
-    //         }
-    //     }
-    //     this.daysCompleted = completedMap;
-    //     return this.daysCompleted;    
-    // }
-
     setDaysCompleted(): void {
         const completedArr = [];
         if (this.duration) {
@@ -61,12 +50,10 @@ export class Exercise {
     ){}
 }
 
-export class DayCompletion extends Program {
+export class DayCompletion {
     constructor(
         public title: string = "",
         public days: number = 0,
         public weekIdx: number = 0,
-    ){
-        super();
-    }
+    ){}
 }
