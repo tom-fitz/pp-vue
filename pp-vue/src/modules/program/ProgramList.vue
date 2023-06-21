@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router';
 import { mdiChevronRight, mdiCircleSmall } from "@mdi/js";
 import { ref, onMounted, computed } from 'vue';
 import { useProgramStore } from './store';
+import { type Headers } from '../../plugins/vuetify';
+import {Program, DayCompletion} from './Program';
 
 const userStore = useUserStore();
 
@@ -17,17 +19,51 @@ onMounted(() => {
 
 const programs = computed(() => programStore.programs);
 
+programs.value.forEach((p: Program) => p.daysCompleted = setDaysCompleted(p))
+
+const headers: Headers = [
+    [
+        {
+            title: 'Daily at home',
+            key: 'name',
+        },
+        {
+            title: 'Target',
+            key: 'target',
+        },
+        {
+            title: 'Sets X Reps',
+            key: 'setsXReps',
+        },
+        {
+            title: 'Load',
+            key: 'load',
+        },
+        {
+            title: 'Reference Video',
+            key: 'videoUri'
+        }
+    ]
+];
+
 
 const rightArrow = ref(mdiChevronRight);
 
-const trip = ref({
-        name: '',
-        location: null,
-        start: null,
-        end: null,
-})
-
 // const statusCircle = ref(mdiCircleSmall);
+
+const logger = (val: any) => console.log("val: ", val);
+
+const setDaysCompleted = (program: Program): DayCompletion[] => {
+    const completedArr: DayCompletion[] = [];
+    if (program.duration) {
+        for (let x = 1; x <= program.duration; x++) {
+            const item = new DayCompletion(`WK${x}`, 0, x);
+            completedArr.push(item);
+        }
+        program.daysCompleted = [...completedArr];
+    }
+    return completedArr;
+}
 
 </script>
 <template>
@@ -68,7 +104,30 @@ const trip = ref({
             </template>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
-            <v-row>
+            <template v-if="item.description !== ''">
+                <v-row>
+                    <v-col cols="8">{{ item.description }}</v-col>
+                    <v-col 
+                        cols="1"
+                        v-for="(com, index) in item.daysCompleted"
+                        :key="index"
+                    >{{ logger(com) }}: <v-text-field type="number" v-model="com.days"></v-text-field></v-col>
+                </v-row>
+            </template>
+            <v-data-table
+                :items="item.exercises"
+                :headers="headers"
+                :hide-default-footer="true"
+                :items-per-page="15"
+                disable-pagination
+                density="compact"
+            >
+                <template v-slot:[`column.name`]="{}">
+                    {{ item.name }}
+                </template>
+                <template #bottom></template>
+            </v-data-table>
+            <!-- <v-row>
                 <v-col cols="2">{{ item.name }}</v-col>
                 <v-col cols="2">{{ 'Target' }}</v-col>
                 <v-col cols="2">{{ 'Sets X Reps' }}</v-col>
@@ -91,7 +150,7 @@ const trip = ref({
                 <v-col cols="2">{{ ex.setsXReps }}</v-col>
                 <v-col cols="2">{{ ex.load }}</v-col>
                 <v-col cols="2">{{ ex.videoUri }}</v-col>
-            </v-row>
+            </v-row> -->
         </v-expansion-panel-text>
         </v-expansion-panel>
     </v-expansion-panels>
