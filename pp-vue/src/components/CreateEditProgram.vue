@@ -19,8 +19,7 @@ const props = defineProps({
 const program = ref(props.program).value;
 
 const createProgram = () => {
-    // program.create();
-    program.setDaysCompleted();
+    program.create();
     programStore.createProgram(program);
     emit('drawerClose');
 }

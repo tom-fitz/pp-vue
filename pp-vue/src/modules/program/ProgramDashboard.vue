@@ -32,7 +32,7 @@ const program = ref(new Program());
                     variant="flat" 
                     class="text-none"
                     @click.stop="drawer = !drawer"
-                    data-test="invoice-create-btn"
+                    data-test="program-create-btn"
                     >New Program</v-btn>
             </v-col>
         </v-row>

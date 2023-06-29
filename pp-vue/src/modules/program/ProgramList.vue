@@ -6,6 +6,9 @@ import { ref, onMounted, computed } from 'vue';
 import { useProgramStore } from './store';
 import { type Headers } from '../../plugins/vuetify';
 import {Program, DayCompletion} from './Program';
+import YouTube from 'vue3-youtube';
+import LiteYouTubeEmbed from 'vue-lite-youtube-embed'
+import 'vue-lite-youtube-embed/style.css'
 
 const userStore = useUserStore();
 
@@ -26,22 +29,27 @@ const headers: Headers = [
         {
             title: 'Daily at home',
             key: 'name',
+            sortable: false,
         },
         {
             title: 'Target',
             key: 'target',
+            sortable: false,
         },
         {
             title: 'Sets X Reps',
             key: 'setsXReps',
+            sortable: false,
         },
         {
             title: 'Load',
             key: 'load',
+            sortable: false,
         },
         {
             title: 'Reference Video',
-            key: 'videoUri'
+            key: 'videoUri',
+            sortable: false,
         }
     ]
 ];
@@ -65,6 +73,22 @@ const setDaysCompleted = (program: Program): DayCompletion[] => {
     return completedArr;
 }
 
+const dialog = ref(false);
+
+const parseVideoId = (url: string): string => {
+    // logger(uri)
+    // var regExp = '#^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])#';
+    // var match = uri.match(regExp);
+    // const result = (match&&match[7].length==11)? match[7] : '';
+    // logger(result);
+    // return result;
+    const urlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?.*v=|shorts\/)|youtu\.be\/)([\w-]{11})$/;
+
+    const match = url.match(urlRegex) ?? '';
+
+    return match[1];
+}
+
 </script>
 <template>
     <v-row>
@@ -74,6 +98,9 @@ const setDaysCompleted = (program: Program): DayCompletion[] => {
       <v-expansion-panel
         v-for="(item, idx) in programs"
         :key="idx"
+        class="ml-8 mt-2 mr-4 transparent"
+        style="background-color: transparent !important; border: 1px solid #1F213A;"
+        elevation="0"
       >
         <v-expansion-panel-title>
             <template v-slot:default="{}">
@@ -131,6 +158,42 @@ const setDaysCompleted = (program: Program): DayCompletion[] => {
             >
                 <template v-slot:[`column.name`]="{}">
                     {{ item.name }}
+                </template>
+                <template v-slot:item="{ item }">
+                    <tr>
+                        <td>{{ item.columns.name }}</td>
+                        <td>{{ item.columns.target }}</td>
+                        <td>{{ item.columns.setsXReps }}</td>
+                        <td>{{ item.columns.load }}</td>
+                        <td><v-btn 
+                            v-if="item.columns.videoUri && item.columns.videoUri !== ''" 
+                            elevation="0" 
+                            @click="dialog = !dialog" 
+                            :append-icon="rightArrow"
+                            >Watch</v-btn>
+                        </td>
+                        <!-- <td>{{ item.columns.videoUri }}</td> -->
+                        <v-dialog
+                            v-model="dialog"
+                            fullscreen
+                        >
+                            <v-btn color="primary" block @click="dialog = !dialog">Close</v-btn>
+                            <LiteYouTubeEmbed
+                                :id="parseVideoId(item.columns.videoUri)"
+                                :title="item.columns.name"
+                            />
+                            <!-- <YouTube
+                                :src="item.columns.videoUri"
+                                ref="youtube"
+                            ></YouTube> -->
+                            <v-btn color="primary" block @click="dialog = !dialog">Close</v-btn>
+                        </v-dialog>
+                        <!-- <VideoDialog 
+                            :dialog="dialog" 
+                            :video-uri="item.columns.videoUri" 
+                            @dialog-close="dialog = false"
+                        ></VideoDialog> -->
+                    </tr>
                 </template>
                 <template #bottom></template>
             </v-data-table>

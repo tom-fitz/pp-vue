@@ -61,16 +61,18 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to, from, next) => {
   const store = useUserStore();
   if (to.meta?.isAuth == true) {
     const currentUser = await getCurrentUser();
-    // redirect to login screen if user is not already logged in and the route requires auth.
-    if (!currentUser && to.meta.isAuth && to.name !== 'login') return { name: 'login' };
+    if (to.meta.isAuth && !currentUser) {
+      next('/login')
+      return
+    }
     
     const newUser = new User();
 
-    newUser.set(currentUser as fbUser); 
+    newUser.set(currentUser as fbUser);
     store.setCurrentUser(newUser);
 
     // TODO: this auth data should really live in the token returned from FB
@@ -82,9 +84,11 @@ router.beforeEach(async (to, from) => {
     // check if user is not an admin but trying to access an admin route. Cancel the route and set an error message.
     if (to.meta.isAdmin && !newUser.isAdmin) {
       await store.setErrorMessage(`User ${newUser.email} does not have permission to access ${to.name?.toString()}. Contact admin.`);
-      return false;
+      next('/')
+      return;
     }
   }
+  next()
 })
 
 export default router

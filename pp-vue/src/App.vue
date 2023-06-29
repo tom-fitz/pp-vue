@@ -1,3 +1,6 @@
+<script setup lang="ts">
+import UserLogout from '@/modules/user/UserLogout.vue'
+</script>
 <template>
   <v-app id="inspire" style="background-color:#141625;">
     <v-navigation-drawer
@@ -35,6 +38,9 @@
             src="../assets/image-avatar.jpg"
           ></v-img>
         </v-col> -->
+        <v-col cols="auto">
+          <UserLogout />
+        </v-col>
       </v-row>
     </v-navigation-drawer>
 
@@ -53,6 +59,3 @@
     </v-container>
   </v-app>
 </template>
-
-<script setup lang="ts">
-</script>

@@ -82,6 +82,7 @@ export const useUserStore = defineStore("userStore", {
       this.loading = true;
       try {
         api.signOutUser();
+        this.user = new User();
         this.successMsg = `Successfully logged out user ${user.email}`;
       } catch (err) {
         this.errorMsg = err;

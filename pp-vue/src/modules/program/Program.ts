@@ -11,6 +11,15 @@ export class Program {
         public completionTitle: string = "",
     ){}
 
+    create(): void {
+        this.exercises.forEach((e: Exercise) => {
+            if (e.videoUri && e.videoUri !== '') {
+                e.parseVideoId(e.videoUri);
+            }
+        });
+        this.setDaysCompleted();
+    }
+
     setDaysCompleted(): void {
         const completedArr = [];
         if (this.duration) {
@@ -46,8 +55,15 @@ export class Exercise {
         public setsXReps: string = "",
         public load: string = "",
         public videoUri: string = "",
+        public videoId: string = "",
         public notes: string = "",
     ){}
+
+    parseVideoId(url: string): void {
+        const urlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?.*v=|shorts\/)|youtu\.be\/)([\w-]{11})$/;
+        const match = url.match(urlRegex) ?? '';
+        this.videoId = match[1];
+    }
 }
 
 export class DayCompletion {
