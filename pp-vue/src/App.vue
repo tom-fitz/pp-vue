@@ -1,5 +1,26 @@
 <script setup lang="ts">
-import UserLogout from '@/modules/user/UserLogout.vue'
+import { storeToRefs } from 'pinia'
+import { useUserStore } from './modules/user/store';
+import { User } from './modules/user/User';
+import { useRouter } from 'vue-router';
+import { computed, onMounted } from 'vue';
+import { getCurrentUser } from '@/plugins/firebase';
+
+const userStore = useUserStore();
+
+// let user: User = computed(() => userStore.user).value;
+
+const { user } = storeToRefs(userStore);
+
+const router = useRouter();
+
+const viewProfile = (id: string): void => {
+  if (id === '') {
+    return;
+  }
+
+  router.push({ name: 'user-profile', params: { uid: id } });
+}
 </script>
 <template>
   <v-app id="inspire" style="background-color:#141625;">
@@ -8,40 +29,43 @@ import UserLogout from '@/modules/user/UserLogout.vue'
       :width="80"
       style="border-top-right-radius:15px;border-bottom-right-radius:15px"
     >
-      <v-row class="h-100 flex-column" style="margin:0!important;">
-        <v-col cols="auto" :width="80" class="align-items-center pt-6 pb-6" style="background-color:#7C5DF9;border-bottom-right-radius:15px;border-top-right-radius:15px;">
+      <v-row align="center" class="h-100 flex-column" style="margin:0!important;">
+        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6" style="background-color:#7C5DF9;border-bottom-right-radius:15px;border-top-right-radius:15px;">
           <!-- <v-img
             :width="35"
             aspect-ratio="16/9"
             cover
             class="d-block text-center mx-auto"
-            src="./assets/logo.svg"
+            :src="require('./assets/pp_logo.png')"
           ></v-img> -->
           <v-img
-            :width="35"
+            :width="55"
             aspect-ratio="16/9"
             cover
-            class="d-block text-center mx-auto"
+            class="pb-6 d-block text-center mx-auto"
           ></v-img>
         </v-col>
         <v-spacer />
-        <!-- <v-col cols="auto" style="text-align:center">
-          <SvgIcon type="mdi" :path="avatarPath" color="white" cover></SvgIcon>
-        </v-col>
-        <v-col cols="auto">
-          <v-img
-            :width="46"
-            aspect-ratio="16/9"
-            cover
-            style="border-radius:50%"
-            class="d-block text-center mx-auto"
-            src="../assets/image-avatar.jpg"
-          ></v-img>
-        </v-col> -->
-        <v-col cols="auto">
-          <UserLogout />
-        </v-col>
+        <v-avatar
+          :color="'#7C5DF9'"
+          size="55"
+          @click.stop="viewProfile(user.id ?? '')"
+          class="mb-4"
+        >
+          <span class="text-h5">{{ user.getInitials() }}</span>
+        </v-avatar>
       </v-row>
+      <!-- <v-spacer />
+      <v-row align="center" class="flex-column">
+        <v-avatar
+          :color="'#7C5DF9'"
+          size="55"
+          @click.stop="viewProfile(user.id ?? '')"
+          class="mb-4"
+        >
+          <span class="text-h5">{{ user.getInitials() }}</span>
+        </v-avatar>
+      </v-row> -->
     </v-navigation-drawer>
 
     <v-container style="margin-top:100px;max-width:90%">

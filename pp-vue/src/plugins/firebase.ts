@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 
 const fbConfig = {
     apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -16,7 +16,7 @@ const firebaseApp = initializeApp(fbConfig);
 export const fbAuth = getAuth(firebaseApp);
 
 
-export async function getCurrentUser() {
+export async function getCurrentUser(): Promise<User> {
   return new Promise((resolve, reject) => {
     if (fbAuth.currentUser) {
       resolve(fbAuth.currentUser)
@@ -26,7 +26,7 @@ export async function getCurrentUser() {
       fbAuth,
       (user) => {
         removeListener();
-        resolve(user);
+        resolve(user as User);
       },
       reject
     )

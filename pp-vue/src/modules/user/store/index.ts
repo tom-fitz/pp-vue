@@ -67,8 +67,15 @@ export const useUserStore = defineStore("userStore", {
         this.loading = false;
       }
     },
-    setCurrentUser(user: User): void {
-      this.user = user;
+    async setCurrentUser(userId: string): Promise<void> {
+      try {
+        const storedUser = await api.getUser(userId);
+        this.user = storedUser;
+      } catch (err) {
+        this.errorMsg = err;
+      } finally {
+        this.loading = false;
+      }
     },
     resetMessages(): void {
       (this.successMsg = ""), (this.errorMsg = "");
@@ -83,12 +90,25 @@ export const useUserStore = defineStore("userStore", {
       try {
         api.signOutUser();
         this.user = new User();
-        this.successMsg = `Successfully logged out user ${user.email}`;
+        this.successMsg = `Successfully logged out user ${user.firstName}`;
       } catch (err) {
         this.errorMsg = err;
       } finally {
         this.loading = false;
       }
     },
+    updateUser(updatedUser: User): void {
+      this.resetMessages();
+      this.loading = true;
+      try {
+        api.updateUser(updatedUser);
+        this.user === updatedUser;
+        this.successMsg = `Successfully updated user ${updatedUser.firstName}`;
+      } catch (err) {
+        this.errorMsg = err;
+      } finally {
+        this.loading = false;
+      }
+    }
   },
 });

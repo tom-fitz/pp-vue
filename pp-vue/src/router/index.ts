@@ -57,23 +57,39 @@ const router = createRouter({
         isAuth: true,
         isAdmin: false,
       }
+    },
+    {
+      path: '/admin/user/:uid',
+      name: 'user-admin-view',
+      component: () => import('@/modules/user/UserAdminView.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: true,
+      }
+    },
+    {
+      path: '/user/:uid/profile',
+      name: 'user-profile',
+      component: () => import('@/modules/user/UserProfile.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: false,
+      }
     }
   ]
 })
 
 router.beforeEach(async (to, from, next) => {
   const store = useUserStore();
+  const currentFBUser = await getCurrentUser();
+  const newUser = new User();
+  newUser.set(currentFBUser as fbUser);
+  await store.setCurrentUser(newUser.id);
   if (to.meta?.isAuth == true) {
-    const currentUser = await getCurrentUser();
-    if (to.meta.isAuth && !currentUser) {
+    if (to.meta.isAuth && !currentFBUser) {
       next('/login')
       return
     }
-    
-    const newUser = new User();
-
-    newUser.set(currentUser as fbUser);
-    store.setCurrentUser(newUser);
 
     // TODO: this auth data should really live in the token returned from FB
     // this will suffice for now, but really should be done in a FB function
@@ -84,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
     // check if user is not an admin but trying to access an admin route. Cancel the route and set an error message.
     if (to.meta.isAdmin && !newUser.isAdmin) {
       await store.setErrorMessage(`User ${newUser.email} does not have permission to access ${to.name?.toString()}. Contact admin.`);
-      next('/')
+      next(from)
       return;
     }
   }

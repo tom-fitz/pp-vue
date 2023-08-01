@@ -1,18 +1,29 @@
 <script setup lang="ts">
 import { mdiPlus } from "@mdi/js";
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Program } from "./Program";
 import CreateEditProgram from "@/components/CreateEditProgram.vue";
 import { useUserStore } from "../user/store";
 import { User } from "../user/User";
+import { useRouter } from "vue-router";
 
 const userStore = useUserStore();
+const router = useRouter();
 
 userStore.listUsers();
 
 const drawer = ref();
 
 const program = ref(new Program());
+
+const users = computed(() => userStore.userList);
+
+const viewUserProfile = (id: string) => {
+    if (id === '') {
+        return;
+    }
+    router.push({name: 'user-admin-view', params: {uid: id}});
+}
 </script>
 
 <template>
@@ -47,4 +58,16 @@ const program = ref(new Program());
     >
         <CreateEditProgram :program="(program as Program)" :user-list="(userStore.userList as User[])" @drawer-close="drawer = false"></CreateEditProgram>
     </v-navigation-drawer>
+    <v-container>
+        <v-card elevation="0" color="transparent">
+            <v-card-title>User List</v-card-title>
+            <v-card-text>
+                <v-btn 
+                    v-for="(user, index) in users" 
+                    :key="index"
+                    @click.stop="viewUserProfile(user.id ?? '')"
+                >{{ user.email }}</v-btn>
+            </v-card-text>
+        </v-card>
+    </v-container>
 </template>

@@ -14,16 +14,16 @@ const router = useRouter();
 
 let snackbar = ref(false);
 
+
 const login = async () => {
     const uid = await store.loginUser(user.value);
+    await store.setCurrentUser(uid);
     snackbar.value = true;
-    console.log("uid: ", uid)
     if (store.user.isAdmin) {
         router.push({ name: 'program-dashboard'})
     } else {
-        router.push({ name: 'program-list', params: { uid } })
+        router.push({ name: 'program-list', params: { uid: uid } })
     }
-    router.push({ name: 'program-dashboard' })
 }
 
 const timeout = ref(3000)

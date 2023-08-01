@@ -9,5 +9,13 @@ const logout = () => {
 }
 </script>
 <template>
-    <v-btn @click.stop="logout">Logout</v-btn>
+    <v-btn 
+        block   
+        rounded="xl" 
+        size="large" 
+        color="#7C5DF9" 
+        variant="flat" 
+        class="text-none"
+        @click.stop="logout"
+    >Logout</v-btn>
 </template>
