@@ -57,8 +57,6 @@ const headers: Headers = [
 
 const rightArrow = ref(mdiChevronRight);
 
-// const statusCircle = ref(mdiCircleSmall);
-
 const logger = (val: any) => console.log("val: ", val);
 
 const setDaysCompleted = (program: Program): DayCompletion[] => {
@@ -76,16 +74,8 @@ const setDaysCompleted = (program: Program): DayCompletion[] => {
 const dialog = ref(false);
 
 const parseVideoId = (url: string): string => {
-    // logger(uri)
-    // var regExp = '#^(?:https?://|//)?(?:www\.|m\.|.+\.)?(?:youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|feeds/api/videos/|watch\?v=|watch\?.+&v=))([\w-]{11})(?![\w-])#';
-    // var match = uri.match(regExp);
-    // const result = (match&&match[7].length==11)? match[7] : '';
-    // logger(result);
-    // return result;
     const urlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?.*v=|shorts\/)|youtu\.be\/)([\w-]{11})$/;
-
     const match = url.match(urlRegex) ?? '';
-
     return match[1];
 }
 
@@ -108,25 +98,6 @@ const parseVideoId = (url: string): string => {
                 <v-col cols="4" class="d-flex justify-start">
                 {{ item.name }}
                 </v-col>
-                <!-- <v-col
-                cols="8"
-                class="text-grey"
-                >
-                <v-fade-transition leave-absolute>
-                    <span
-                    v-if="expanded"
-                    key="0"
-                    >
-                    Enter a name for the trip
-                    </span>
-                    <span
-                    v-else
-                    key="1"
-                    >
-                    {{ `Hello ${+1}` }}
-                    </span>
-                </v-fade-transition>
-                </v-col> -->
             </v-row>
             </template>
         </v-expansion-panel-title>
@@ -161,18 +132,17 @@ const parseVideoId = (url: string): string => {
                 </template>
                 <template v-slot:item="{ item }">
                     <tr>
-                        <td>{{ item.columns.name }}</td>
-                        <td>{{ item.columns.target }}</td>
-                        <td>{{ item.columns.setsXReps }}</td>
-                        <td>{{ item.columns.load }}</td>
-                        <td><v-btn 
+                        <td class="bg-color">{{ item.columns.name }}</td>
+                        <td class="bg-color">{{ item.columns.target }}</td>
+                        <td class="bg-color">{{ item.columns.setsXReps }}</td>
+                        <td class="bg-color">{{ item.columns.load }}</td>
+                        <td class="bg-color"><v-btn 
                             v-if="item.columns.videoUri && item.columns.videoUri !== ''" 
                             elevation="0" 
                             @click="dialog = !dialog" 
                             :append-icon="rightArrow"
                             >Watch</v-btn>
                         </td>
-                        <!-- <td>{{ item.columns.videoUri }}</td> -->
                         <v-dialog
                             v-model="dialog"
                             fullscreen
@@ -197,31 +167,12 @@ const parseVideoId = (url: string): string => {
                 </template>
                 <template #bottom></template>
             </v-data-table>
-            <!-- <v-row>
-                <v-col cols="2">{{ item.name }}</v-col>
-                <v-col cols="2">{{ 'Target' }}</v-col>
-                <v-col cols="2">{{ 'Sets X Reps' }}</v-col>
-                <v-col cols="2">{{ 'Load' }}</v-col>
-                <v-col cols="2">{{ 'Reference Video' }}</v-col>
-                <v-col cols="2">{{ item.completionTitle }}</v-col>
-            </v-row>
-            <template v-if="item.description !== ''">
-                <v-row>
-                    <v-col cols="10">{{ item.description }}</v-col>
-                    <v-col cols="2">{{ 'Weekly input goes here:' }}</v-col>
-                </v-row>
-            </template>
-            <v-row
-                v-for="(ex, i) in item.exercises"
-                :key="i"
-            >
-                <v-col cols="2">{{ ex.name }}</v-col>
-                <v-col cols="2">{{ ex.target }}</v-col>
-                <v-col cols="2">{{ ex.setsXReps }}</v-col>
-                <v-col cols="2">{{ ex.load }}</v-col>
-                <v-col cols="2">{{ ex.videoUri }}</v-col>
-            </v-row> -->
         </v-expansion-panel-text>
         </v-expansion-panel>
     </v-expansion-panels>
 </template>
+<style>
+.bg-color {
+    background-color: transparent;
+}
+</style>

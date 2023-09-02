@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useUserStore } from './modules/user/store';
-import { User } from './modules/user/User';
 import { useRouter } from 'vue-router';
-import { computed, onMounted } from 'vue';
-import { getCurrentUser } from '@/plugins/firebase';
 
 const userStore = useUserStore();
-
-// let user: User = computed(() => userStore.user).value;
 
 const { user } = storeToRefs(userStore);
 
@@ -31,13 +26,6 @@ const viewProfile = (id: string): void => {
     >
       <v-row align="center" class="h-100 flex-column" style="margin:0!important;">
         <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6" style="background-color:#7C5DF9;border-bottom-right-radius:15px;border-top-right-radius:15px;">
-          <!-- <v-img
-            :width="35"
-            aspect-ratio="16/9"
-            cover
-            class="d-block text-center mx-auto"
-            :src="require('./assets/pp_logo.png')"
-          ></v-img> -->
           <v-img
             :width="55"
             aspect-ratio="16/9"
@@ -55,17 +43,6 @@ const viewProfile = (id: string): void => {
           <span class="text-h5">{{ user.getInitials() }}</span>
         </v-avatar>
       </v-row>
-      <!-- <v-spacer />
-      <v-row align="center" class="flex-column">
-        <v-avatar
-          :color="'#7C5DF9'"
-          size="55"
-          @click.stop="viewProfile(user.id ?? '')"
-          class="mb-4"
-        >
-          <span class="text-h5">{{ user.getInitials() }}</span>
-        </v-avatar>
-      </v-row> -->
     </v-navigation-drawer>
 
     <v-container style="margin-top:100px;max-width:90%">
@@ -83,3 +60,8 @@ const viewProfile = (id: string): void => {
     </v-container>
   </v-app>
 </template>
+<style>
+.v-avatar {
+  cursor: pointer;
+}
+</style>

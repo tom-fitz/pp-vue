@@ -8,20 +8,33 @@ const programStore = useProgramStore();
 
 const valid = ref(false);
 
-const emit = defineEmits(['drawerClose']);
+const emit = defineEmits(['drawerClose','templateSelection']);
 
 const props = defineProps({
     program: { type: Object as PropType<Program>, required: true },
     userList: { type: Array as PropType<User[]>, required: true },
+    templateList: { type: Array as PropType<Program[]>, required: true },
     isEdit: { type: Boolean },
 });
 
-const program = ref(props.program).value;
+let program = ref(props.program).value;
 
 const createProgram = () => {
     program.create();
     programStore.createProgram(program);
     emit('drawerClose');
+}
+
+const createTemplate = async () => {
+    program.create();
+    await programStore.createProgramTemplate(program);
+    emit('drawerClose');
+}
+
+const templateSelection = (id: string | any) => {
+    console.log(props.templateList.find((t: Program) => t.id === id));
+    const temp = props.templateList.find((t: Program) => t.id === id);
+    program = Object.assign(new Program(), temp);
 }
 
 </script>
@@ -30,6 +43,22 @@ const createProgram = () => {
         <v-card-title class="text-h4">New Program</v-card-title>
         <v-form v-model="valid" :min-width="600">
             <v-container justify="center">
+                <v-row>
+                    <v-col col="6">
+                        <span class="input-ph">Template Selection</span><br />
+                        <v-select
+                            label="Select template"
+                            :items="props.templateList"
+                            item-value="id"
+                            item-title="name"
+                            required
+                            class="pt-4"
+                            dense
+                            @update:modelValue="templateSelection"
+                        >
+                        </v-select>
+                    </v-col>
+                </v-row>
                 <v-row>
                     <v-col
                     cols="6"
@@ -202,7 +231,6 @@ const createProgram = () => {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-spacer></v-spacer>
                     <v-col cols="6">
                         <v-btn
                         block
@@ -213,6 +241,17 @@ const createProgram = () => {
                         class="text-none"
                         @click.stop="createProgram()"
                         >+ Add New Program</v-btn>
+                    </v-col>
+                    <v-col cols="6">
+                        <v-btn
+                        block
+                        rounded="xl"
+                        size="large"
+                        color="#1F213A"
+                        variant="flat" 
+                        class="text-none"
+                        @click.stop="createTemplate()"
+                        >+ Create New Template</v-btn>
                     </v-col>
                 </v-row>
             </v-container>

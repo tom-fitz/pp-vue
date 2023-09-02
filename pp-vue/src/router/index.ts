@@ -41,6 +41,24 @@ const router = createRouter({
       }
     },
     {
+      path: '/program/create',
+      name: 'program-create',
+      component: () => import('../modules/program/CreateEdit/CreateNameDesc.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: true,
+      },
+    },
+    {
+      path: '/program/:id/create/workouts',
+      name: 'program-create-workouts',
+      component: () => import('../modules/program/CreateEdit/CreateWorkouts.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: true,
+      }
+    },
+    {
       path: '/program/:uid',
       name: 'program-list',
       component: () => import('../modules/program/ProgramList.vue'),
@@ -59,7 +77,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/admin/user/:uid',
+      path: '/admin/user/:uid/profile',
       name: 'user-admin-view',
       component: () => import('@/modules/user/UserAdminView.vue'),
       meta: {

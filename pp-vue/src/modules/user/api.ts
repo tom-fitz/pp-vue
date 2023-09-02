@@ -20,6 +20,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { capitalize } from "node_modules/cypress/types/lodash";
 
 interface IApi {
   registerUser: (user: User) => Promise<fbUser>;
@@ -57,6 +58,7 @@ const registerUser = (user: User): Promise<fbUser> =>
     .then((data: UserCredential) => {
       const db = getDatabase();
       user.id = data.user.uid;
+      user.displayName = (`${capatilize(user.firstName ?? '') + ' ' + capatilize(user.lastName)}`)
       set(ref(db, `users/${data.user.uid}`), Object.assign(new User(), user))
       return data.user;
     })
@@ -93,20 +95,6 @@ const addUser = async (user: User): Promise<void> => {
   //   .catch((error) => error);
 };
 
-// const getUser = async (userId: string): Promise<User> => 
-//   await fetch(`${dataBaseUrl}/users.json?equalTo="${userId}"`, {
-//     method: "POST",
-//     headers: {
-//       Accept: "application/json",
-//       "Content-Type": "application/json",
-//     },
-//   })
-//   .then((response) => response.json())
-//   .then((response) => {
-//     return response;
-//   })
-//   .catch((error) => error);
-
 const getUser = async (userId: string): Promise<User> => {
   const db = getDatabase();
   const q = query(ref(db, 'users/'), orderByChild('id'), equalTo(userId));
@@ -139,26 +127,10 @@ const signOutUser = (): Promise<void> =>
     })
     .catch((error) => error);
 
-const updateUser = async (updatedUser: User): Promise<void> => 
-// https://pp-vue-default-rtdb.firebaseio.com/users/-NXOBCORD6BBc5Xx9whw
-// https://pp-vue-default-rtdb.firebaseio.com/users
-  // await fetch(`${dataBaseUrl}/users/${updatedUser.id}.json`, {
-  //   method: "POST",
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(updatedUser)
-  // })
-  // .then((response) => response.json())
-  // .then((response) => {
-  //   return response;
-  // })
-  // .catch((error) => error);
-  {
-    const db = getDatabase();
-    set(ref(db, `users/${updatedUser.id}`), updatedUser)
-  }
+const updateUser = async (updatedUser: User): Promise<void> => {
+  const db = getDatabase();
+  set(ref(db, `users/${updatedUser.id}`), updatedUser)
+}
 
 export const api: IApi = {
   registerUser,

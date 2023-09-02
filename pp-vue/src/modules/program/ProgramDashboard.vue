@@ -6,10 +6,15 @@ import CreateEditProgram from "@/components/CreateEditProgram.vue";
 import { useUserStore } from "../user/store";
 import { User } from "../user/User";
 import { useRouter } from "vue-router";
+import { type Headers } from '../../plugins/vuetify';
+import { mdiChevronRight } from "@mdi/js";
+import { useProgramStore } from "./store";
 
+const programStore = useProgramStore();
 const userStore = useUserStore();
 const router = useRouter();
 
+programStore.getProgramTemplates();
 userStore.listUsers();
 
 const drawer = ref();
@@ -23,11 +28,50 @@ const viewUserProfile = (id: string) => {
         return;
     }
     router.push({name: 'user-admin-view', params: {uid: id}});
+};
+
+const headers: Headers = [
+    [
+        {
+            title: 'First name',
+            key: 'firstName',
+            sortable: false,
+        },
+        {
+            title: 'Last name',
+            key: 'lastName',
+            sortable: false,
+        },
+        {
+            title: 'Email',
+            key: 'email',
+            sortable: false,
+        },
+        {
+            title: 'Phone number',
+            key: 'phoneNumber',
+            sortable: false,
+        },
+        {
+            title: '',
+            key: 'actions',
+            sortable: false,
+        }
+    ]
+];
+
+const rightArrow = ref(mdiChevronRight);
+
+const templateSelected = (id: string | any) => {
+    program.value = programStore.templates.find((t: Program) => t.id === id) as Program;
 }
+
+const createProgram = () => router.push({ name: 'program-create'})
+
 </script>
 
 <template>
-    <v-card elevation="0" color="transparent">
+    <v-container>
         <v-row>
             <v-col cols="auto">
                 <v-card-title class="text-h3">Program Dashboard</v-card-title>
@@ -42,12 +86,42 @@ const viewUserProfile = (id: string) => {
                     color="#7C5DF9" 
                     variant="flat" 
                     class="text-none"
-                    @click.stop="drawer = !drawer"
+                    @click.stop="createProgram()"
                     data-test="program-create-btn"
                     >New Program</v-btn>
             </v-col>
         </v-row>
-    </v-card>
+        <v-row>
+            <v-col cols="auto" style="border:solid 1px grey;border-radius:5px">
+                <v-data-table
+                    :items="users"
+                    :headers="headers"
+                    :hide-default-footer="true"
+                    :items-per-page="50"
+                    disable-pagination
+                    density="compact"
+                >
+                    <template v-slot:item="{ item }">
+                        <tr>
+                            <td class="bg-color">{{ item.columns.firstName }}</td>
+                            <td class="bg-color">{{ item.columns.lastName }}</td>
+                            <td class="bg-color">{{ item.columns.email }}</td>
+                            <td class="bg-color">{{ item.columns.phoneNumber }}</td>
+                            <td class="bg-color">View <v-icon
+                                size="small"
+                                class="me-2"
+                                @click="viewUserProfile(item.value)"
+                            >
+                                {{ rightArrow }}
+                            </v-icon></td>
+                        </tr>
+                    </template>
+                    <template #bottom></template>
+                </v-data-table> 
+            </v-col>
+        </v-row>
+        <v-row></v-row>
+    </v-container>
     <v-navigation-drawer
         v-model="drawer"
         temporary
@@ -56,18 +130,17 @@ const viewUserProfile = (id: string) => {
         :width="1000"
         class="pa-10"
     >
-        <CreateEditProgram :program="(program as Program)" :user-list="(userStore.userList as User[])" @drawer-close="drawer = false"></CreateEditProgram>
+        <CreateEditProgram 
+            :program="(program as Program)"
+            :user-list="(userStore.userList as User[])"
+            :template-list="(programStore.templates as Program[])"
+            @drawer-close="drawer = false"
+            @template-selection="templateSelected"
+        ></CreateEditProgram>
     </v-navigation-drawer>
-    <v-container>
-        <v-card elevation="0" color="transparent">
-            <v-card-title>User List</v-card-title>
-            <v-card-text>
-                <v-btn 
-                    v-for="(user, index) in users" 
-                    :key="index"
-                    @click.stop="viewUserProfile(user.id ?? '')"
-                >{{ user.email }}</v-btn>
-            </v-card-text>
-        </v-card>
-    </v-container>
 </template>
+<style>
+.bg-color {
+    background-color: #141625 !important;
+}
+</style>

@@ -7,21 +7,42 @@ export const useProgramStore = defineStore("programStore", {
         errorMsg: {} as unknown,
         successMsg: '',
         loading: false,
-        programs: [] as Program[]
+        programs: [] as Program[],
+        templates: [] as Program[],
     }),
     getters: {
         getPrograms: (state) => state.programs,
     },
     actions: {
-        async createProgram (program: Program): Promise<void> {
+        async createProgramFS (program: Program): Promise<string> {
             this.loading = true;
             try {
-                await api.createProgram(program)
+                const id = await api.createProgramFS(program);
+                program.id = id;
+                this.programs.push(program);
+                this.programs = [...this.programs];
+                return id;
             } catch (err) {
                 this.errorMsg = err;
             } finally {
                 this.loading = false;
             }
+            return '';
+        },
+        async createProgram (program: Program): Promise<string> {
+            this.loading = true;
+            try {
+                const id = await api.createProgram(program);
+                program.id = id;
+                this.programs.push(program);
+                this.programs = [...this.programs];
+                return id;
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+            return '';
         },
         async getProgramsByUID (uid: string): Promise<void> {
             this.loading = true;
@@ -33,6 +54,39 @@ export const useProgramStore = defineStore("programStore", {
             } finally {
                 this.loading = false;
             }
-        }
+        },
+        async getProgramById (id: string): Promise<void> {
+            this.loading = true;
+            try {
+                const program = await api.getProgramById(id);
+                this.programs.push(program);
+                this.programs = [...this.programs];
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        },
+        async createProgramTemplate (program: Program): Promise<void> {
+            this.loading = true;
+            try {
+                await api.createProgramTemplate(program)
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        },
+        async getProgramTemplates (): Promise<void> {
+            this.loading = true;
+            try {
+                const templates = await api.getProgramTemplates();
+                this.templates = [...templates];
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        },
     }
 });

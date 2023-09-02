@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 const fbConfig = {
     apiKey: import.meta.env.VITE_FB_API_KEY,
@@ -14,6 +15,8 @@ const fbConfig = {
 
 const firebaseApp = initializeApp(fbConfig);
 export const fbAuth = getAuth(firebaseApp);
+
+export const fs = getFirestore(firebaseApp);
 
 
 export async function getCurrentUser(): Promise<User> {
