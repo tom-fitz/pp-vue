@@ -124,6 +124,7 @@ const resetQuery = () => {
                             label="Select Type"
                             :items="typeOpts"
                             v-model="queryOpts.type"
+                            density="compact"
                         ></v-select>
                     </v-col>
                     <v-col cols="6">
@@ -131,6 +132,7 @@ const resetQuery = () => {
                             label="Select Muscle"
                             :items="muscleOpts"
                             v-model="queryOpts.muscle"
+                            density="compact"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -139,6 +141,7 @@ const resetQuery = () => {
                         <v-text-field
                             placeholder="Name"
                             v-model="queryOpts.name"
+                            density="compact"
                         ></v-text-field>
                     </v-col>
                     <v-col cols="6">
@@ -146,6 +149,7 @@ const resetQuery = () => {
                             label="Select Difficulty"
                             :items="diffOpts"
                             v-model="queryOpts.difficulty"
+                            density="compact"
                         ></v-select>
                     </v-col>
                 </v-row>

@@ -19,7 +19,7 @@ const userList = computed(() => userStore.userList);
 
 store.getProgramById(route.params['id'].toString())
 
-const program: Program = store.programs.find((p: Program) => p.id === route.params['id'].toString()) ?? new Program();
+const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'].toString()) ?? new Program());
 
 const week: string[] = ['sun','mon','tues','wed','thur','fri','sat'];
 
@@ -75,7 +75,6 @@ watch(search, (val, prevVal) => {
                 :key="idx"
                 cols="auto"
                 ma-12
-                class="pa-4"
             >
                 <v-row><small all class="ml-2">{{ day }}</small></v-row>
                 <v-row>
@@ -85,7 +84,6 @@ watch(search, (val, prevVal) => {
                             min-height="300"
                             v-bind="props"
                         >
-                            <v-card-title></v-card-title>
                             <template v-if="activeCol.index !== idx">
                                 <v-overlay
                                     :model-value="isHovering"
@@ -102,41 +100,99 @@ watch(search, (val, prevVal) => {
                                 </v-overlay>
                             </template>
                             <template v-else>
-                                <v-row>
+                                <v-row class="mt-0 pa-0">
                                     <v-text-field
+                                        v-model="program.name"
                                         placeholder="Title"
                                         class="ma-0"
+                                        density="compact"
                                     ></v-text-field>
                                 </v-row>
-                                <v-row class="mt-0">
+                                <v-row class="mt-0 mb-0">
                                     <v-textarea 
+                                        v-model="program.warmup"
                                         rows="1"
                                         placeholder="Warmup.." 
                                         class="ma-0 pa-0"
+                                        density="compact"
                                     ></v-textarea>
                                 </v-row>
+                                <div 
+                                    class="mt-0 mb-0 pa-0" 
+                                    v-for="(x, idx) in program.exercises" 
+                                    :key="idx"
+                                >
+                                    <v-row class="mt-0 mb-0">
+                                        <v-autocomplete
+                                            v-model="program.exercises[idx].title"
+                                            v-model:search="search"
+                                            :loading="exerciseStore.loading"
+                                            :items="exItems"
+                                            item-title="name"
+                                            class="truncate"
+                                            density="compact"
+                                            hide-no-data
+                                            hide-details
+                                            label="Exercise Title"
+                                            style="max-width: 300px;whitespace:nowrap;overflow:hidden;"
+                                        >
+                                        </v-autocomplete>
+                                    </v-row>
+                                    <v-row class="mt-2">
+                                        <v-textarea 
+                                            v-model="program.exercises[idx].description"
+                                            rows="2"
+                                            placeholder="Sets, reps, tempo, weight, etc.."
+                                            class="ma-0 pa-0"
+                                            density="compact"
+                                        ></v-textarea>
+                                    </v-row>
+                                </div>
                                 <v-row class="mt-0">
-                                    <v-autocomplete
-                                        v-model="select"
-                                        v-model:search="search"
-                                        :loading="exerciseStore.loading"
-                                        :items="exItems"
-                                        item-title="name"
-                                        class="truncate"
-                                        density="comfortable"
-                                        hide-no-data
-                                        hide-details
-                                        label="Exercise Title"
-                                        style="max-width: 300px;whitespace:nowrap;overflow:hidden;"
-                                    >
-                                    </v-autocomplete>
+                                    <v-col cols="12" class="pt-0 pb-0">
+                                        <v-btn
+                                            block
+                                            rounded="xs"
+                                            size="x-small"
+                                            color="transparent"
+                                            variant="flat" 
+                                            class="text-none"
+                                            style="border: solid 1px #93949B"
+                                            @click.stop="program.addExercise()"
+                                        >+ Add Exercise</v-btn>
+                                    </v-col>
                                 </v-row>
-                                <v-row style="background-color: #1F213A;">
+                                <v-row class="">
                                     <v-textarea 
-                                        rows="2"
-                                        placeholder="Sets, reps, tempo, weight, etc.."
+                                        v-model="program.cooldown"
+                                        rows="1"
+                                        placeholder="Cooldown.."
                                         class="ma-0 pa-0"
+                                        density="compact"
                                     ></v-textarea>
+                                </v-row>
+                                <v-row class="mb-1 mt-0">
+                                    <v-col cols="6" class="pt-0 pr-0 pb-0">
+                                        <v-btn
+                                        block
+                                        rounded="xs"
+                                        size="x-small"
+                                        color="#1F213A"
+                                        variant="flat" 
+                                        class="text-none"
+                                        >Save</v-btn>
+                                    </v-col>
+                                    <v-col cols="6" class="pt-0 pl-0 pb-0">
+                                        <v-btn
+                                        block
+                                        rounded="xs"
+                                        size="x-small"
+                                        color="transparent"
+                                        variant="flat" 
+                                        class="text-none"
+                                        style="border: solid 1px #93949B"
+                                        >Cancel</v-btn>
+                                    </v-col>
                                 </v-row>
                             </template>
                         </v-card>  
@@ -152,5 +208,8 @@ watch(search, (val, prevVal) => {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 300px; /* Adjust the max-width as needed */
+}
+.v-field__input {
+  font-size: 12px !important;
 }
 </style>

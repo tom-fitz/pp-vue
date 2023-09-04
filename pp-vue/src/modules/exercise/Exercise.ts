@@ -12,7 +12,8 @@ export class Exercise {
         public muscle: string = "",
         public equipment: string = "",
         public instructions: string = "",
-        public difficulty: string = ""
+        public difficulty: string = "",
+        public description: string = ""
     ){}
 
     parseVideoId(url: string): void {

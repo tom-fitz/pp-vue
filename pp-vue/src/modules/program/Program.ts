@@ -11,6 +11,8 @@ export class Program {
         public daysCompleted: DayCompletion[] = [new DayCompletion()],
         public duration: number = 0,
         public completionTitle: string = "",
+        public warmup: string = "",
+        public cooldown: string = ""
     ){}
 
     create(): void {
