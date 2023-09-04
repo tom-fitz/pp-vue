@@ -1,3 +1,5 @@
+import { Exercise } from "../exercise/Exercise";
+
 export class Program {
     constructor(
         public id: string = "",
@@ -43,26 +45,6 @@ export class Program {
         if (this.exercises) {
             this.exercises.splice(idx, 1);
         }
-    }
-}
-
-
-export class Exercise {
-    constructor(
-        public title: string = "",
-        public name: string = "",
-        public target: string = "",
-        public setsXReps: string = "",
-        public load: string = "",
-        public videoUri: string = "",
-        public videoId: string = "",
-        public notes: string = "",
-    ){}
-
-    parseVideoId(url: string): void {
-        const urlRegex = /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?.*v=|shorts\/)|youtu\.be\/)([\w-]{11})$/;
-        const match = url.match(urlRegex) ?? '';
-        this.videoId = match[1];
     }
 }
 

@@ -77,6 +77,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/program/exercise',
+      name: 'program-exercise',
+      component: () => import('../modules/exercise/CreateExercise.vue'),
+      meta: {
+        isAuth: true,
+        isAdmin: true,
+      }
+    },
+    {
       path: '/admin/user/:uid/profile',
       name: 'user-admin-view',
       component: () => import('@/modules/user/UserAdminView.vue'),

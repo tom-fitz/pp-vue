@@ -1,5 +1,5 @@
-import { doc, collection, addDoc, setDoc } from "firebase/firestore";
-import { DayCompletion, Exercise, Program } from "./Program";
+// import { doc, collection, addDoc, setDoc } from "firebase/firestore";
+import { Program } from "./Program";
 import { 
     getDatabase, 
     ref, 
@@ -8,7 +8,7 @@ import {
     push,
     get
 } from 'firebase/database';
-import { fs } from "@/plugins/firebase";
+// import { fs } from "@/plugins/firebase";
 
 interface IApi {
     createProgram: (program: Program) => Promise<string>;
@@ -69,6 +69,8 @@ const getProgramTemplates = async (): Promise<Program[]> => {
     });
     return templates;
 }
+
+// const getExercises = async (): Promise<> => {}
 
 export const api: IApi = {
     createProgram,
