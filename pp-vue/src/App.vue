@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useUserStore } from './modules/user/store';
 import { useRouter } from 'vue-router';
+import BreadCrumb from './components/BreadCrumb.vue';
 
 const userStore = useUserStore();
 
@@ -53,6 +54,7 @@ const viewProfile = (id: string): void => {
             width="90%"
             color="transparent"
           >
+            <BreadCrumb />
             <RouterView />
           </v-sheet>
         </v-col>

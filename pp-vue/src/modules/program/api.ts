@@ -1,4 +1,3 @@
-// import { doc, collection, addDoc, setDoc } from "firebase/firestore";
 import { Program } from "./Program";
 import { 
     getDatabase, 
@@ -8,7 +7,6 @@ import {
     push,
     get
 } from 'firebase/database';
-// import { fs } from "@/plugins/firebase";
 
 interface IApi {
     createProgram: (program: Program) => Promise<string>;
@@ -17,6 +15,7 @@ interface IApi {
     createProgramTemplate: (program: Program) => Promise<void>;
     getProgramTemplates: () => Promise<Program[]>;
     getProgramById: (id: string) => Promise<Program>;
+    saveProgram: (program: Program) => Promise<void>;
 }
 
 const createProgram = async (program: Program): Promise<string> => {
@@ -30,8 +29,14 @@ const createProgram = async (program: Program): Promise<string> => {
 const createProgramFS = async (program: Program): Promise<string> => {
     const db = getDatabase();
     const newPostKey = push(child(ref(db), 'programs')).key;
+    program.id = newPostKey ?? '';
     await set(ref(db, `programs/${newPostKey}`), Object.assign({}, program));
     return newPostKey ?? '';
+}
+
+const saveProgram = async (program: Program): Promise<void> => {
+    const db = getDatabase();
+    await set(ref(db, `programs/${program.id}`), Object.assign({}, program));
 }
 
 const getProgramsByUID = async (uid: string): Promise<Program[]> => {
@@ -78,7 +83,8 @@ export const api: IApi = {
     createProgramTemplate,
     getProgramTemplates,
     createProgramFS,
-    getProgramById
+    getProgramById,
+    saveProgram
 }
 
 export default api;

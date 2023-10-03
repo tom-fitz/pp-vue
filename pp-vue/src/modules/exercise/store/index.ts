@@ -21,6 +21,19 @@ export const useExerciseStore = defineStore('exerciseStore', {
             } finally {
                 this.loading = false;
             }
+        },
+        async createExercise (ex: Exercise): Promise<void> {
+            this.loading = true;
+            try {
+                const id = await api.createExercise(ex);
+                ex.id = id;
+                this.exercises.push(ex);
+                this.exercises = [...this.exercises];
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
         }
     },
 });

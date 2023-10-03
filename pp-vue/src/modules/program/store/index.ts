@@ -44,6 +44,17 @@ export const useProgramStore = defineStore("programStore", {
             }
             return '';
         },
+        async saveProgram (program: Program): Promise<void> {
+            this.loading = true;
+            try {
+                await api.saveProgram(program);
+                this.successMsg = `Successfully updated program ${program.id}`
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        },
         async getProgramsByUID (uid: string): Promise<void> {
             this.loading = true;
             try {

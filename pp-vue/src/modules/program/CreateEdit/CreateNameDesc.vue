@@ -6,7 +6,9 @@ import { useRouter } from 'vue-router';
 const store = useProgramStore();
 const router = useRouter();
 
-const program = ref(new Program());
+const initProgram: Program = new Program();
+
+const program = ref(initProgram.create());
 
 const createSaveProgram = async () => {
     const id = await store.createProgramFS(program.value);

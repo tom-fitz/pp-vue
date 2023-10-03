@@ -1,5 +1,7 @@
 export class Exercise {
     constructor(
+        public id: string = "",
+        public position: number = 0,
         public title: string = "",
         public name: string = "",
         public target: string = "",

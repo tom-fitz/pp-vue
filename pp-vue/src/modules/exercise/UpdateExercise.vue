@@ -2,7 +2,6 @@
 import { useExerciseStore } from './store';
 import { Exercise, type IExerciseParams } from './Exercise';
 import { computed, ref } from 'vue';
-import { QueryCompositeFilterConstraint } from 'firebase/firestore';
 
 const store = useExerciseStore();
 
@@ -51,7 +50,6 @@ const diffOpts: string[] = [
 ];
 
 const queryExercise = () => {
-    console.log("options: ", queryOpts)
     store.getExercises(queryOpts);
 };
 
@@ -68,50 +66,101 @@ const resetQuery = () => {
     queryOpts.muscle = "";
 }
 
+const createExercise = () => {
+    store.createExercise(exercise.value)
+};
+const cancelCreateEx = () => {
+    exercise.value = new Exercise();
+};
+
 </script>
 <template>
     <v-container>
         <v-row>
             <v-col cols="6">
-                <v-row><h2 class="ml-4">Create Exercise</h2></v-row>
+                <v-row><h2 class="ml-4">Update Exercise</h2></v-row>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pb-0">
                         <v-text-field 
                             placeholder="Name"
                             v-model="exercise.name"
+                            density="compact"
                         ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pt-0 pb-0">
                         <v-select
-                            placeholder="Type"
+                            label="Select Type"
                             :items="typeOpts"
                             v-model="exercise.type"
+                            density="compact"
                         ></v-select>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pt-0 pb-0">
                         <v-select
                             :items="diffOpts"
                             label="Select Difficulty"
                             v-model="exercise.difficulty"
+                            density="compact"
                         ></v-select>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pt-0 pb-0">
                         <v-text-field
+                            placeholder="Equipment"
                             v-model="exercise.equipment"
+                            density="compact"
                         ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12">
+                    <v-col cols="12" class="pt-0 pb-0">
                         <v-textarea
+                            placeholder="Instructions..."
                             v-model="exercise.instructions"
+                            density="compact"
                         ></v-textarea>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="12" class="pt-0 pb-0">
+                        <v-text-field
+                            v-model="exercise.videoUri"
+                            placeholder="Video URL"
+                            density="compact"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col cols="6" class="pt-0">
+                        <v-btn
+                            block
+                            rounded="xl"
+                            size="large"
+                            color="#1F213A"
+                            variant="flat" 
+                            class="text-none"
+                            @click.stop="createExercise()"
+                            data-test="invoice-item-add"
+                            :loading="store.loading"
+                        >Update Exercise</v-btn>
+                    </v-col>
+                    <v-col cols="6" class="pt-0">
+                        <v-btn
+                            block
+                            rounded="xl"
+                            size="large"
+                            color="transparent"
+                            variant="flat" 
+                            class="text-none"
+                            style="border: solid 1px #93949B"
+                            @click.stop="cancelCreateEx()"
+                            data-test="invoice-item-add"
+                        >Cancel</v-btn>
                     </v-col>
                 </v-row>
             </v-col>
@@ -119,7 +168,7 @@ const resetQuery = () => {
             <v-col cols="6">
                 <v-row><h2 class="ml-4">Select from Exercises</h2></v-row>
                 <v-row>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pb-0">
                         <v-select
                             label="Select Type"
                             :items="typeOpts"
@@ -127,7 +176,7 @@ const resetQuery = () => {
                             density="compact"
                         ></v-select>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pb-0">
                         <v-select
                             label="Select Muscle"
                             :items="muscleOpts"
@@ -137,14 +186,14 @@ const resetQuery = () => {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pt-0 pb-0">
                         <v-text-field
                             placeholder="Name"
                             v-model="queryOpts.name"
                             density="compact"
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pt-0 pb-0">
                         <v-select
                             label="Select Difficulty"
                             :items="diffOpts"
@@ -154,7 +203,7 @@ const resetQuery = () => {
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pt-0">
                         <v-btn
                             block
                             rounded="xl"
@@ -167,7 +216,7 @@ const resetQuery = () => {
                             :loading="store.loading"
                         >Find Exercise</v-btn>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col cols="6" class="pt-0">
                         <v-btn
                             block
                             rounded="xl"
@@ -175,7 +224,7 @@ const resetQuery = () => {
                             color="transparent"
                             variant="flat" 
                             class="text-none"
-                            style="border: solid 1px white"
+                            style="border: solid 1px #93949B"
                             @click.stop="resetQuery()"
                             data-test="invoice-item-add"
                         >Reset</v-btn>
@@ -211,17 +260,18 @@ const resetQuery = () => {
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.type }}</td>
                                 <td>{{ item.difficulty }}</td>
-                                <!-- <td>{{ item.instructions }}</td> -->
                             </tr>
                             </tbody>
                         </v-table>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-col cols="12">
-                        <pre :v-text="exercise">{{ exercise }}</pre>
-                    </v-col>
-                </v-row>
+                <template v-if="exercise.id && exercise.id !== ''">
+                    <v-row>
+                        <v-col cols="12">
+                            <pre :v-text="exercise">{{ exercise }}</pre>
+                        </v-col>
+                    </v-row>
+                </template>
             </v-col>
         </v-row>
     </v-container>

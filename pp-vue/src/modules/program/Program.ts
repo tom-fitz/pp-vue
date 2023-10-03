@@ -1,5 +1,46 @@
 import { Exercise } from "../exercise/Exercise";
 
+export class Workout {
+    constructor(
+        public name: string = "",
+        public exercises: Exercise[] = [new Exercise()],
+        public warmup: string = "",
+        public cooldown: string = "",
+        public position: number = 0,
+        public dayIndex: number = 0
+    ){}
+
+    reset() {
+        this.name = '';
+        this.exercises = [new Exercise()];
+        this.warmup = '';
+        this.cooldown = '';
+    }
+}
+
+export class Day {
+    constructor(
+        public position: number = 0,
+        public long_title: string = '',
+        public short_title: string = '',
+        public workouts: Workout[] = [new Workout()],
+        public weekIndex: number = 0
+    ){}
+
+    reset() {
+        this.long_title = '';
+        this.short_title = '';
+        this.workouts = [new Workout()];
+    }
+}
+
+export class Week {
+    constructor(
+        public position: number = 0,
+        public days: Day[] = []
+    ){}
+}
+
 export class Program {
     constructor(
         public id: string = "",
@@ -11,17 +52,22 @@ export class Program {
         public daysCompleted: DayCompletion[] = [new DayCompletion()],
         public duration: number = 0,
         public completionTitle: string = "",
-        public warmup: string = "",
-        public cooldown: string = ""
+        public weeks: Week[] = []
     ){}
 
-    create(): void {
-        this.exercises.forEach((e: Exercise) => {
-            if (e.videoUri && e.videoUri !== '') {
-                e.parseVideoId(e.videoUri);
-            }
+    create(): Program {
+        const newPro = new Program();
+        newPro.weeks.push(new Week(0, this.newWeek()));
+        return newPro;
+    }
+
+    newWeek(): Day[] {
+        const dayNames = [['Sunday','sun'],['Monday','mon'],['Tuesday','tues'],['Wednesday','wed'],['Thursday','thur'],['Friday','fri'],['Saturday','sat']];
+        const resp: Day[] = [];
+        dayNames.forEach((x: string[], idx: number) => {
+            resp.push(new Day(idx, x[0], x[1]))
         });
-        this.setDaysCompleted();
+        return resp;
     }
 
     setDaysCompleted(): void {
@@ -47,6 +93,16 @@ export class Program {
         if (this.exercises) {
             this.exercises.splice(idx, 1);
         }
+    }
+
+    initializeWeek(): Workout[][] {
+        const resp: Workout[][] = [];
+        const week: Workout[] = [];
+        for (let i=0; i < 7; i++) {
+            week.push(new Workout())
+        }
+        resp.push([...week]);
+        return resp;
     }
 }
 

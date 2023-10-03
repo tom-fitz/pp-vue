@@ -9,11 +9,14 @@ import {
     get, 
     update,
     push,
-    child
+    child,
+    set
  } from 'firebase/database';
+import { mdiConsoleNetworkOutline } from '@mdi/js';
 
 interface IApi {
     getExercises: (exParams: IExerciseParams) => Promise<Exercise[]>
+    createExercise: (ex: Exercise) => Promise<string>
 }
 
 const getExercises = async (params: IExerciseParams): Promise<Exercise[]> => {
@@ -55,9 +58,30 @@ const getExercises = async (params: IExerciseParams): Promise<Exercise[]> => {
     return resp.data;
 }
 
+const createExercise = async (ex: Exercise): Promise<string> => {
+    const db = getDatabase();
+    const exQueryByName = query(
+        ref(db, "exercises"),
+        orderByChild("name"),
+        equalTo(ex.name)
+    );
+    let id: string = '';
+    const snapshot = await get(exQueryByName);
+    if (snapshot.exists()) {
+        const e = snapshot.val();
+        id = Object.keys(e)[0];
+    }
+    if (id === '') {
+        id = push(child(ref(db), 'exercises')).key ?? '';
+    }
+    await update(ref(db, `/exercises/${id}`), Object.assign({}, ex))
+    return id ?? '';
+}
+
 
 const api: IApi = {
     getExercises,
+    createExercise,
 }
 
 export default api;

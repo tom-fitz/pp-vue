@@ -38,6 +38,11 @@ const router = createRouter({
       meta: {
         isAuth: true,
         isAdmin: true,
+        breadCrumb: [
+          {
+            text: 'Dashboard'
+          }
+        ]
       }
     },
     {
@@ -47,6 +52,15 @@ const router = createRouter({
       meta: {
         isAuth: true,
         isAdmin: true,
+        breadCrumb: [
+          {
+            text: 'Dashboard',
+            to: { name: 'program-dashboard' }
+          },
+          {
+            text: 'Program Create'
+          }
+        ]
       },
     },
     {
@@ -56,6 +70,25 @@ const router = createRouter({
       meta: {
         isAuth: true,
         isAdmin: true,
+        breadCrumbs(route: { params: { id: string } }){
+          const programId = route.params.id;
+          return [
+            {
+              text: 'Dashboard',
+              to: { name: 'program-dashboard' }
+            },
+            {
+              text: 'Program Create',
+              to: {
+                name: 'program-create',
+                params: { id: programId }
+              }
+            },
+            {
+              text: 'Workouts'
+            }
+          ]
+        }
       }
     },
     {
@@ -79,10 +112,19 @@ const router = createRouter({
     {
       path: '/program/exercise',
       name: 'program-exercise',
-      component: () => import('../modules/exercise/CreateExercise.vue'),
+      component: () => import('../modules/exercise/UpdateExercise.vue'),
       meta: {
         isAuth: true,
         isAdmin: true,
+        breadCrumbs: [
+          {
+            text: 'Dashboard',
+            to: { name: 'program-dashboard' }
+          },
+          {
+            text: 'Exercise'
+          }
+        ]
       }
     },
     {
