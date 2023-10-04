@@ -6,6 +6,7 @@ import { mdiPlus } from '@mdi/js';
 import { ref, computed, watch } from 'vue';
 import { useUserStore } from '@/modules/user/store';
 import { useExerciseStore } from '@/modules/exercise/store';
+import { Exercise } from '@/modules/exercise/Exercise';
 
 const store = useProgramStore();
 const userStore = useUserStore();
@@ -40,6 +41,16 @@ const exItems = computed(() => exerciseStore.exercises);
 const search = ref('')
 
 const select = ref();
+
+const addExercise = (wIdx: number, weekIdx: number, dayIdx: number): void => {
+    program.value.weeks[weekIdx].days[dayIdx].workouts[wIdx].exercises.push(new Exercise());
+}
+
+// const saveWorkout = async (w: Workout) => {
+//     // await store.saveProgram(program.value);
+//     const wid = await store.saveWorkout(w);
+//     program.value.
+// }
 
 const saveProgram = async () => {
     await store.saveProgram(program.value);
@@ -117,7 +128,7 @@ watch(search, (val, prevVal) => {
                             <template v-else>
                                 <div
                                     class="ma-0"
-                                    v-for="(w) in day.workouts"
+                                    v-for="(w, workIdx) in day.workouts"
                                     :key="w.position"
                                 >
                                     <v-row class="mt-0 pa-0">
@@ -146,6 +157,7 @@ watch(search, (val, prevVal) => {
                                             <v-autocomplete
                                                 v-model="e.title"
                                                 v-model:search="search"
+                                                :value="e.id"
                                                 :loading="exerciseStore.loading"
                                                 :items="exItems"
                                                 item-title="name"
@@ -178,7 +190,7 @@ watch(search, (val, prevVal) => {
                                                 variant="flat" 
                                                 class="text-none"
                                                 style="border: solid 1px #93949B"
-                                                @click.stop="program.addExercise()"
+                                                @click.stop="program.weeks[wIdx].days[idx].workouts[workIdx].exercises.push(new Exercise())"
                                             >+ Add Exercise</v-btn>
                                         </v-col>
                                     </v-row>

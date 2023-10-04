@@ -7,8 +7,18 @@ export class Workout {
         public warmup: string = "",
         public cooldown: string = "",
         public position: number = 0,
-        public dayIndex: number = 0
+        public dayIndex: number = 0,
+        public id: string = "",
+        public programIds: string[] = []
     ){}
+
+    addExercise() {
+        if (!this.exercises) {
+            this.exercises = [new Exercise()];
+        } else {
+            this.exercises.push(new Exercise());
+        }
+    }
 
     reset() {
         this.name = '';
@@ -78,14 +88,6 @@ export class Program {
                 completedArr.push(item);
             }
             this.daysCompleted = [...completedArr];
-        }
-    }
-
-    addExercise(): void {
-        if (!this.exercises) {
-            this.exercises = [new Exercise()];
-        } else {
-            this.exercises?.push(new Exercise());
         }
     }
 

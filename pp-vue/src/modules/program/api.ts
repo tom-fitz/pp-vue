@@ -1,4 +1,4 @@
-import { Program } from "./Program";
+import { Program, Workout } from "./Program";
 import { 
     getDatabase, 
     ref, 
@@ -16,6 +16,7 @@ interface IApi {
     getProgramTemplates: () => Promise<Program[]>;
     getProgramById: (id: string) => Promise<Program>;
     saveProgram: (program: Program) => Promise<void>;
+    saveWorkout: (workout: Workout) => Promise<string>;
 }
 
 const createProgram = async (program: Program): Promise<string> => {
@@ -75,6 +76,14 @@ const getProgramTemplates = async (): Promise<Program[]> => {
     return templates;
 }
 
+const saveWorkout = async (workout: Workout): Promise<string> => {
+    const db = getDatabase();
+    const newPostKey = push(child(ref(db), `/workouts` )).key ?? '';
+    workout.id = newPostKey;
+    await set(ref(db, `/workouts/${newPostKey}`), Object.assign({}, workout));
+    return newPostKey;
+}
+
 // const getExercises = async (): Promise<> => {}
 
 export const api: IApi = {
@@ -84,7 +93,8 @@ export const api: IApi = {
     getProgramTemplates,
     createProgramFS,
     getProgramById,
-    saveProgram
+    saveProgram,
+    saveWorkout
 }
 
 export default api;

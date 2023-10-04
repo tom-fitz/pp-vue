@@ -1,4 +1,4 @@
-import { Program } from '../Program'
+import { Program, Workout } from '../Program'
 import { defineStore } from 'pinia'
 import api from '../api'
 
@@ -9,6 +9,7 @@ export const useProgramStore = defineStore("programStore", {
         loading: false,
         programs: [] as Program[],
         templates: [] as Program[],
+        workouts: [] as Workout[]
     }),
     getters: {
         getPrograms: (state) => state.programs,
@@ -99,5 +100,19 @@ export const useProgramStore = defineStore("programStore", {
                 this.loading = false;
             }
         },
+        async saveWorkout (workout: Workout): Promise<string> {
+            this.loading = true;
+            try {
+                const wid = await api.saveWorkout(workout);
+                workout.id = wid;
+                this.workouts = [...this.workouts, workout];
+                return wid;
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+            return '';
+        }
     }
 });
