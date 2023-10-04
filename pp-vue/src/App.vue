@@ -46,7 +46,14 @@ const viewProfile = (id: string): void => {
       </v-row>
     </v-navigation-drawer>
 
-    <v-container style="margin-top:100px;max-width:90%">
+    <v-main 
+      class="ma-12 d-flex align-center justify-center" 
+      style="min-height:300px;background-color:gray;"
+    >
+      <RouterView />
+    </v-main>
+
+    <!-- <v-container style="margin-top:100px;max-width:90%">
       <v-row justify="center">
         <v-col cols="12">
           <v-sheet
@@ -59,7 +66,7 @@ const viewProfile = (id: string): void => {
           </v-sheet>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
   </v-app>
 </template>
 <style>

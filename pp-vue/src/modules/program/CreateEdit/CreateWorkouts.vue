@@ -72,9 +72,89 @@ watch(search, (val, prevVal) => {
     exerciseLookup(val);
   }
 });
+
+const valid = ref(false);
 </script>
 <template>
-    <v-container class="ma-0 pa-0">
+<v-container class="bg-surface-variant">
+    <v-row
+      v-for="(week) in program.weeks"
+      :key="week.position"
+    >
+        <v-col
+            v-for="(day) in week.days"
+            :key="day.position"
+        >
+            <v-row><small all class="ml-2">{{ day.short_title }}</small></v-row>
+            <v-row
+                v-for="(wo) in day.workouts"
+                :key="wo.position"
+            >
+                <v-col>
+                    <v-form v-model="valid">
+                        <v-row>
+                            <v-text-field
+                                v-model="wo.name"
+                                variant="underlined"
+                                placeholder="title (optional)"
+                            ></v-text-field>
+                        </v-row>
+                        <V-row>
+                            <v-text-field
+                                v-model="wo.warmup"
+                                variant="underlined"
+                                placeholder="add warmup"
+                            ></v-text-field>
+                        </V-row>
+                        <v-row>
+                            <v-col>
+                                <v-row
+                                    v-for="(ex) in wo.exercises"
+                                    :key="ex.position"
+                                >
+                                    <v-col style="background-color:gray;">
+                                        <v-row>
+                                            <v-autocomplete
+                                                v-model="ex.title"
+                                                v-model:search="search"
+                                                :value="ex.id"
+                                                :loading="exerciseStore.loading"
+                                                :items="exItems"
+                                                item-title="name"
+                                                class="truncate"
+                                                density="compact"
+                                                hide-no-data
+                                                hide-details
+                                                label="Exercise Title"
+                                                style="max-width: 300px;whitespace:nowrap;overflow:hidden;"
+                                            >
+                                            </v-autocomplete>
+                                        </v-row>
+                                        <v-row>
+                                            <v-text-field
+                                                v-model="ex.setsXReps"
+                                                varient="underlined"
+                                                placeholder="add sets x reps"
+                                            ></v-text-field>
+                                        </v-row>
+                                    </v-col>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-text-field
+                                v-model="wo.cooldown"
+                                variant="underlined"
+                                placeholder="add cooldown"
+                            ></v-text-field>
+                        </v-row>
+                    </v-form>
+                </v-col>
+            </v-row>
+        </v-col>
+    </v-row>
+</v-container>
+    <!-- <v-container class="ma-0 pa-0">
         <v-row><h2>{{ program.name }}</h2></v-row>
         <v-row>
             <v-col><h4>{{ program.description }}</h4></v-col>
@@ -235,7 +315,7 @@ watch(search, (val, prevVal) => {
                 </v-row>
             </v-col>
         </v-row>
-    </v-container>
+    </v-container> -->
 </template>
 <style>
 .truncate {
