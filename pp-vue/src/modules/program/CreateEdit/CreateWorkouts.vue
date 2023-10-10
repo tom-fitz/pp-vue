@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Program, Workout } from '../Program';
+import { Day, Program, Week, Workout } from '../Program';
 import { useProgramStore } from '../store';
 import { useRoute } from 'vue-router';
 import { mdiPlus } from '@mdi/js';
@@ -7,6 +7,7 @@ import { ref, computed, watch } from 'vue';
 import { useUserStore } from '@/modules/user/store';
 import { useExerciseStore } from '@/modules/exercise/store';
 import { Exercise } from '@/modules/exercise/Exercise';
+import CreateWorkout from '@/components/CreateWorkout.vue'
 
 const store = useProgramStore();
 const userStore = useUserStore();
@@ -74,11 +75,35 @@ watch(search, (val, prevVal) => {
 });
 
 const valid = ref(false);
+
+const dialog = ref(false);
+
+const newWeek = () => {
+    const dayNames = [['Sunday','sun'],['Monday','mon'],['Tuesday','tues'],['Wednesday','wed'],['Thursday','thur'],['Friday','fri'],['Saturday','sat']];
+    const resp: Day[] = [];
+    dayNames.forEach((x: string[], idx: number) => {
+        resp.push(new Day(idx, x[0], x[1]))
+    });
+    program.value.weeks.push(new Week(program.value.weeks.length + 1, resp));
+}
+
 </script>
 <template>
 <v-container class="bg-color main pa-10">
-    <v-row><h2 class="ma-2">{{ program.name }}</h2></v-row>
-    <v-row><h4 class="ma-2">{{ program.description }}</h4></v-row>
+    <v-row>
+        <v-col>
+            <h2 class="">{{ program.name }}</h2>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col align="right">
+            <v-btn 
+                variant="outlined"
+                primary
+                class="mt-2"
+            >Assign Patient</v-btn>
+        </v-col>
+    </v-row>
+    <v-row><v-col><h4 class="">{{ program.description }}</h4></v-col></v-row>
     <v-row
       v-for="(week) in program.weeks"
       :key="week.position"
@@ -97,66 +122,25 @@ const valid = ref(false);
                 v-for="(wo) in day.workouts"
                 :key="wo.position"
             >
-                <v-col class="main-body day-border">
-                    <v-form v-model="valid">
-                        <v-row>
-                            <v-text-field
-                                v-model="wo.name"
-                                variant="underlined"
-                                placeholder="title (optional)"
-                            ></v-text-field>
-                        </v-row>
-                        <v-row>
-                            <v-text-field
-                                v-model="wo.warmup"
-                                variant="underlined"
-                                placeholder="add warmup"
-                            ></v-text-field>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-row
-                                    v-for="(ex) in wo.exercises"
-                                    :key="ex.position"
-                                >
-                                    <v-col style="">
-                                        <v-row>
-                                            <v-autocomplete
-                                                v-model="ex.title"
-                                                v-model:search="search"
-                                                :value="ex.id"
-                                                :loading="exerciseStore.loading"
-                                                :items="exItems"
-                                                item-title="name"
-                                                class="truncate"
-                                                density="compact"
-                                                hide-no-data
-                                                hide-details
-                                                label="Exercise Title"
-                                                style="max-width: 300px;whitespace:nowrap;overflow:hidden;"
-                                            >
-                                            </v-autocomplete>
-                                        </v-row>
-                                        <v-row>
-                                            <v-text-field
-                                                v-model="ex.setsXReps"
-                                                varient="underlined"
-                                                placeholder="add sets x reps"
-                                            ></v-text-field>
-                                        </v-row>
-                                    </v-col>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-text-field
-                                v-model="wo.cooldown"
-                                variant="underlined"
-                                placeholder="add cooldown"
-                            ></v-text-field>
-                        </v-row>
-                    </v-form>
-                </v-col>
+                <v-hover v-slot="{ isHovering, props }">
+                    <v-col class="main-body day-border pa-0" v-bind="props">
+                        <v-expand-transition>
+                            <v-card
+                                v-if="isHovering"
+                                height="100%"
+                                class="d-flex transition-fast-in-fast-out day-hover v-card--reveal text-h5 pa-2 justify-center"
+                            >
+                                <!-- <v-icon
+                                    size="x-large"
+                                    class="add-icon"
+                                    @click="open()"
+                                >{{ plusIcon }}</v-icon> -->
+                                <v-btn :prepend-icon="plusIcon" primary><CreateWorkout :show="dialog" /></v-btn>
+                                
+                            </v-card>
+                        </v-expand-transition>
+                    </v-col>
+                </v-hover>
             </v-row>
         </v-col>
     </v-row>
@@ -164,11 +148,18 @@ const valid = ref(false);
         <v-btn 
             variant="outlined"
             primary
+            @click="newWeek()"
         >Add Week</v-btn>
     </v-row>
+    
 </v-container>
 </template>
 <style>
+.day-hover {
+    background-color: rgba(var(--v-theme-primary), .8) !important;
+    text-align: center !important;
+    color: rgba(var(--v-theme-surface), .7) !important;
+}
 .day-border {
     border: solid .5px rgba(var(--v-theme-surface), .3)
 }

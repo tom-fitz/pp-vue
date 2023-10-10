@@ -33,14 +33,14 @@ export class Day {
         public position: number = 0,
         public long_title: string = '',
         public short_title: string = '',
-        public workouts: Workout[] = [new Workout()],
+        public workouts: Workout[] = [],
         public weekIndex: number = 0
     ){}
 
     reset() {
         this.long_title = '';
         this.short_title = '';
-        this.workouts = [new Workout()];
+        this.workouts = [];
     }
 }
 
