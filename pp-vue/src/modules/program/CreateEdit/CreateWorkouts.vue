@@ -76,7 +76,9 @@ watch(search, (val, prevVal) => {
 const valid = ref(false);
 </script>
 <template>
-<v-container class="bg-surface-variant">
+<v-container class="bg-color main">
+    <v-row><h2>{{ program.name }}</h2></v-row>
+    <v-row><h4>{{ program.description }}</h4></v-row>
     <v-row
       v-for="(week) in program.weeks"
       :key="week.position"
@@ -84,6 +86,7 @@ const valid = ref(false);
         <v-col
             v-for="(day) in week.days"
             :key="day.position"
+            class="day-main"
         >
             <v-row><small all class="ml-2">{{ day.short_title }}</small></v-row>
             <v-row
@@ -91,7 +94,7 @@ const valid = ref(false);
                 :key="wo.position"
             >
                 <v-col>
-                    <v-form v-model="valid">
+                    <!-- <v-form v-model="valid">
                         <v-row>
                             <v-text-field
                                 v-model="wo.name"
@@ -112,7 +115,7 @@ const valid = ref(false);
                                     v-for="(ex) in wo.exercises"
                                     :key="ex.position"
                                 >
-                                    <v-col style="background-color:gray;">
+                                    <v-col style="">
                                         <v-row>
                                             <v-autocomplete
                                                 v-model="ex.title"
@@ -148,176 +151,24 @@ const valid = ref(false);
                                 placeholder="add cooldown"
                             ></v-text-field>
                         </v-row>
-                    </v-form>
+                    </v-form> -->
                 </v-col>
             </v-row>
         </v-col>
     </v-row>
 </v-container>
-    <!-- <v-container class="ma-0 pa-0">
-        <v-row><h2>{{ program.name }}</h2></v-row>
-        <v-row>
-            <v-col><h4>{{ program.description }}</h4></v-col>
-            <v-spacer />
-            <v-col>
-                <v-select
-                    v-model="program.uid"
-                    label="Assign to User"
-                    :items="userList"
-                    item-value="id"
-                    item-title="email"
-                    required
-                    class=""
-                    dense
-                ></v-select>
-            </v-col>
-        </v-row>
-        <v-row 
-            v-for="(week, wIdx) in program.weeks"
-            :key="week.position"
-        >
-            <v-col
-                v-for="(day, idx) in week.days"
-                :key="day.position"
-                cols="auto"
-                ma-12
-            >
-                <v-row><small all class="ml-2">{{ day.short_title }}</small></v-row>
-                <v-row>
-                    <v-hover v-slot="{ isHovering, props }">
-                        <v-card
-                            :width="idx === activeCol.index ? activeCol.width : '150'"
-                            min-height="330"
-                            v-bind="props"
-                        >
-                            <template v-if="activeCol.index !== idx">
-                                <v-overlay
-                                    :model-value="isHovering"
-                                    contained
-                                    scrim="#7C5DF9"
-                                    class="align-top pt-6 justify-center ma-0"
-                                >
-                                    <v-btn 
-                                        variant="flat" 
-                                        block
-                                        class="pa-2"
-                                        @click.stop="setActiveCol(idx)"
-                                    ><v-icon large >{{ plusIcon }}</v-icon></v-btn>
-                                </v-overlay>
-                            </template>
-                            <template v-else>
-                                <div
-                                    class="ma-0"
-                                    v-for="(w, workIdx) in day.workouts"
-                                    :key="w.position"
-                                >
-                                    <v-row class="mt-0 pa-0">
-                                        <v-text-field
-                                            v-model="w.name"
-                                            placeholder="Title"
-                                            class="ma-0"
-                                            density="compact"
-                                        ></v-text-field>
-                                    </v-row>
-                                    <v-row class="mt-0 mb-0">
-                                        <v-textarea 
-                                            v-model="w.warmup"
-                                            rows="1"
-                                            placeholder="Warmup.." 
-                                            class="ma-0 pa-0"
-                                            density="compact"
-                                        ></v-textarea>
-                                    </v-row>
-                                    <div 
-                                        class="mt-0 mb-0 pa-0" 
-                                        v-for="(e) in w.exercises"
-                                        :key="e.position"
-                                    >
-                                        <v-row class="mt-0 mb-0">
-                                            <v-autocomplete
-                                                v-model="e.title"
-                                                v-model:search="search"
-                                                :value="e.id"
-                                                :loading="exerciseStore.loading"
-                                                :items="exItems"
-                                                item-title="name"
-                                                class="truncate"
-                                                density="compact"
-                                                hide-no-data
-                                                hide-details
-                                                label="Exercise Title"
-                                                style="max-width: 300px;whitespace:nowrap;overflow:hidden;"
-                                            >
-                                            </v-autocomplete>
-                                        </v-row>
-                                        <v-row class="mt-2">
-                                            <v-textarea 
-                                                v-model="e.description"
-                                                rows="2"
-                                                placeholder="Sets, reps, tempo, weight, etc.."
-                                                class="ma-0 pa-0"
-                                                density="compact"
-                                            ></v-textarea>
-                                        </v-row>
-                                    </div>
-                                    <v-row class="mt-0">
-                                        <v-col cols="12" class="pt-0 pb-0">
-                                            <v-btn
-                                                block
-                                                rounded="xs"
-                                                size="x-small"
-                                                color="transparent"
-                                                variant="flat" 
-                                                class="text-none"
-                                                style="border: solid 1px #93949B"
-                                                @click.stop="program.weeks[wIdx].days[idx].workouts[workIdx].exercises.push(new Exercise())"
-                                            >+ Add Exercise</v-btn>
-                                        </v-col>
-                                    </v-row>
-                                    <v-row class="">
-                                        <v-textarea 
-                                            v-model="w.cooldown"
-                                            rows="1"
-                                            placeholder="Cooldown.."
-                                            class="ma-0 pa-0"
-                                            density="compact"
-                                        ></v-textarea>
-                                    </v-row>
-                                    <v-row class="mb-1 mt-0">
-                                        <v-col cols="6" class="pt-0 pr-0 pb-0">
-                                            <v-btn
-                                            block
-                                            rounded="xs"
-                                            size="x-small"
-                                            color="#1F213A"
-                                            variant="flat" 
-                                            class="text-none"
-                                            @click.stop="saveProgram()"
-                                            >Save</v-btn>
-                                        </v-col>
-                                        <v-col cols="6" class="pt-0 pl-0 pb-0">
-                                            <v-btn
-                                            block
-                                            rounded="xs"
-                                            size="x-small"
-                                            color="transparent"
-                                            variant="flat" 
-                                            class="text-none"
-                                            style="border: solid 1px #93949B"
-                                            @click.stop="cancelSelection(w, wIdx, idx)"
-                                            >Cancel</v-btn>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </template>
-                        </v-card>  
-                    </v-hover>
-                </v-row>
-            </v-col>
-        </v-row>
-    </v-container> -->
 </template>
 <style>
+.main {
+    max-width: 96% !important;
+}
+.day-main {
+    background-color:rgb(var(--v-theme-surface));
+    min-height: 225px;
+}
+.bg-color {
+    background-color:rgb(var(--v-theme-secondary));
+}
 .truncate {
   white-space: nowrap;
   overflow: hidden;

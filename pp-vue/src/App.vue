@@ -19,14 +19,14 @@ const viewProfile = (id: string): void => {
 }
 </script>
 <template>
-  <v-app id="inspire" style="background-color:#141625;">
+  <v-app id="inspire">
     <v-navigation-drawer
-      color="#1F213A"
+      color="#000000"
       :width="80"
       style="border-top-right-radius:15px;border-bottom-right-radius:15px"
     >
       <v-row align="center" class="h-100 flex-column" style="margin:0!important;">
-        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6" style="background-color:#7C5DF9;border-bottom-right-radius:15px;border-top-right-radius:15px;">
+        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6" style="background-color:#fca311;border-bottom-right-radius:15px;border-top-right-radius:15px;">
           <v-img
             :width="55"
             aspect-ratio="16/9"
@@ -36,7 +36,7 @@ const viewProfile = (id: string): void => {
         </v-col>
         <v-spacer />
         <v-avatar
-          :color="'#7C5DF9'"
+          color="#fca311"
           size="55"
           @click.stop="viewProfile(user.id ?? '')"
           class="mb-4"
@@ -47,29 +47,20 @@ const viewProfile = (id: string): void => {
     </v-navigation-drawer>
 
     <v-main 
-      class="ma-12 d-flex align-center justify-center" 
-      style="min-height:300px;background-color:gray;"
+      class="d-flex align-center justify-center" 
+      style="min-height:300px; width:100%;"
     >
       <RouterView />
     </v-main>
-
-    <!-- <v-container style="margin-top:100px;max-width:90%">
-      <v-row justify="center">
-        <v-col cols="12">
-          <v-sheet
-            rounded="lg"
-            width="90%"
-            color="transparent"
-          >
-            <BreadCrumb />
-            <RouterView />
-          </v-sheet>
-        </v-col>
-      </v-row>
-    </v-container> -->
   </v-app>
 </template>
 <style>
+.drawer-bg {
+  background-color:rgb(var(--v-theme-primary));
+}
+.avatar-bg {
+  color:rgb(var(--v-theme-accent));
+}
 .v-avatar {
   cursor: pointer;
 }
