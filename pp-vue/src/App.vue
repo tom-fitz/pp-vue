@@ -21,12 +21,12 @@ const viewProfile = (id: string): void => {
 <template>
   <v-app id="inspire">
     <v-navigation-drawer
-      color="#000000"
+      color="#1d2d44"
       :width="80"
       style="border-top-right-radius:15px;border-bottom-right-radius:15px"
     >
       <v-row align="center" class="h-100 flex-column" style="margin:0!important;">
-        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6" style="background-color:#fca311;border-bottom-right-radius:15px;border-top-right-radius:15px;">
+        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6 logo" style="border-bottom-right-radius:15px;border-top-right-radius:15px;">
           <v-img
             :width="55"
             aspect-ratio="16/9"
@@ -36,7 +36,7 @@ const viewProfile = (id: string): void => {
         </v-col>
         <v-spacer />
         <v-avatar
-          color="#fca311"
+          color="#748cab"
           size="55"
           @click.stop="viewProfile(user.id ?? '')"
           class="mb-4"
@@ -63,5 +63,8 @@ const viewProfile = (id: string): void => {
 }
 .v-avatar {
   cursor: pointer;
+}
+.logo {
+  background-color: rgb(var(--v-theme-accent));
 }
 </style>

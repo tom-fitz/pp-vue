@@ -76,9 +76,9 @@ watch(search, (val, prevVal) => {
 const valid = ref(false);
 </script>
 <template>
-<v-container class="bg-color main">
-    <v-row><h2>{{ program.name }}</h2></v-row>
-    <v-row><h4>{{ program.description }}</h4></v-row>
+<v-container class="bg-color main pa-10">
+    <v-row><h2 class="ma-2">{{ program.name }}</h2></v-row>
+    <v-row><h4 class="ma-2">{{ program.description }}</h4></v-row>
     <v-row
       v-for="(week) in program.weeks"
       :key="week.position"
@@ -86,15 +86,19 @@ const valid = ref(false);
         <v-col
             v-for="(day) in week.days"
             :key="day.position"
-            class="day-main"
+            class="day-main mt-6"
         >
-            <v-row><small all class="ml-2">{{ day.short_title }}</small></v-row>
+            <v-row>
+                <v-col class="day-border title pt-1 pb-1" align="right">
+                    <small all class="ml-2">{{ day.short_title }}</small>
+                </v-col>
+            </v-row>
             <v-row
                 v-for="(wo) in day.workouts"
                 :key="wo.position"
             >
-                <v-col>
-                    <!-- <v-form v-model="valid">
+                <v-col class="main-body day-border">
+                    <v-form v-model="valid">
                         <v-row>
                             <v-text-field
                                 v-model="wo.name"
@@ -102,13 +106,13 @@ const valid = ref(false);
                                 placeholder="title (optional)"
                             ></v-text-field>
                         </v-row>
-                        <V-row>
+                        <v-row>
                             <v-text-field
                                 v-model="wo.warmup"
                                 variant="underlined"
                                 placeholder="add warmup"
                             ></v-text-field>
-                        </V-row>
+                        </v-row>
                         <v-row>
                             <v-col>
                                 <v-row
@@ -151,19 +155,31 @@ const valid = ref(false);
                                 placeholder="add cooldown"
                             ></v-text-field>
                         </v-row>
-                    </v-form> -->
+                    </v-form>
                 </v-col>
             </v-row>
         </v-col>
     </v-row>
+    <v-row>
+        <v-btn 
+            variant="outlined"
+            primary
+        >Add Week</v-btn>
+    </v-row>
 </v-container>
 </template>
 <style>
+.day-border {
+    border: solid .5px rgba(var(--v-theme-surface), .3)
+}
 .main {
     max-width: 96% !important;
 }
+.main-body {
+    min-height: 225px;
+}
 .day-main {
-    background-color:rgb(var(--v-theme-surface));
+    background-color:rgb(var(--v-theme-secondary));
     min-height: 225px;
 }
 .bg-color {

@@ -9,13 +9,13 @@ import { VDataTable } from 'vuetify/labs/components';
 export type Headers = InstanceType<typeof VDataTable>['headers']
 
 const darkStyles: ThemeDefinition = {
-  dark: false,
+  dark: true,
   colors: {
-    background: '#ffffff',
-    surface: '#e5e5e5',
-    primary: '#000000',
-    secondary: '#14213d',
-    accent: '#fca311',
+    background: '#0d1321',
+    surface: '#f0ebd8',
+    primary: '#1d2d44',
+    secondary: '#3e5c76',
+    accent: '#748cab',
     error: '#f44336',
     warning: '#ff9800', 
     info: '#3f51b5',
