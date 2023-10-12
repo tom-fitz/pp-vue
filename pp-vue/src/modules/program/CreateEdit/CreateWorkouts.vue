@@ -15,7 +15,7 @@ const route = useRoute();
 
 store.getProgramById(route.params['id'].toString());
 
-const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'].toString()) ?? new Program().create());
+const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'].toString()));
 
 const plusIcon = ref(mdiPlus);
 
@@ -91,11 +91,11 @@ const saveWorkout = async (e) => {
     </v-row>
     <v-row class="mt-0"><v-col><h4 class="mt-0">{{ program.description }}</h4></v-col></v-row>
     <v-row
-      v-for="(week, wIdx) in program.weeks"
+      v-for="(week) in program.weeks"
       :key="week.position"
     >
         <v-col
-            v-for="(day, dIdx) in week.days"
+            v-for="(day) in week.days"
             :key="day.position"
             class="day-main mt-6"
         >
@@ -105,12 +105,19 @@ const saveWorkout = async (e) => {
                 </v-col>
             </v-row>
             <v-row
-                v-for="(wo) in day.workouts"
+                v-for="wo in day.workouts"
                 :key="wo.position"
             >
-                <v-hover v-slot="{ isHovering, props }">
-                    <v-col class="main-body day-border pa-0" v-bind="props">
-                        <v-expand-transition>
+                    <v-col class="main-body day-border pa-0">
+                        <v-card class="day-hover">
+                            <code>{{ day }}</code>
+                        </v-card>
+                        <!-- <template v-if="wo.exercises[0].id !== ''">
+                            <v-card class="day-hover">
+                                <v-card-title>{{ wo.Name }}</v-card-title>
+                            </v-card>
+                        </template> -->
+                        <!-- <v-expand-transition>
                             <v-card
                                 v-if="isHovering"
                                 height="100%"
@@ -124,9 +131,24 @@ const saveWorkout = async (e) => {
                                     size="x-small"
                                 ></v-btn>
                             </v-card>
-                        </v-expand-transition>
+                        </v-expand-transition> -->
+                        <!-- <v-hover v-slot="{ hover }">
+                        <v-card
+                            height="100%"
+                            class="day-hover pa-2 justify-center { 'on-hover': hover }"
+                        >
+                            <v-btn 
+                                class="add-btn-main { 'show-btn': hover }" 
+                                :icon="plusIcon" 
+                                @click="openDialog(wIdx, dIdx)"
+                                primary
+                                size="x-small"
+                            ></v-btn>
+                        </v-card>
+                        </v-hover> -->
                     </v-col>
-                </v-hover>
+                
+                <!-- workout display -->
             </v-row>
         </v-col>
     </v-row>
@@ -146,9 +168,25 @@ const saveWorkout = async (e) => {
     />
 </v-container>
 </template>
-<style>
+<style scoped>
+.v-card {
+  transition: filter .4s ease-in-out;
+}
+.v-card.on-hover {
+  filter: brightness(25%);
+  background-color: rgba(var(--v-theme-primary), .8) !important;
+  text-align: center !important;
+  color: rgba(var(--v-theme-surface), .7) !important;
+}
+.show-btn {
+  opacity: 1;
+}
 .add-btn-main {
-    background-color: rgba(var(--v-theme-surface), .5) !important;
+  /* background-color: rgba(var(--v-theme-surface), .5) !important; */
+  opacity: 0;
+  background-color: #fff !important;
+  color: #000 !important;
+  transition: opacity .4s ease-in-out;
 }
 .day-hover {
     background-color: rgba(var(--v-theme-primary), .8) !important;
