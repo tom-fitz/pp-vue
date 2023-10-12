@@ -20,20 +20,7 @@ const viewProfile = (id: string): void => {
 </script>
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      color="#1d2d44"
-      :width="80"
-      style="border-top-right-radius:15px;border-bottom-right-radius:15px"
-    >
-      <v-row align="center" class="h-100 flex-column" style="margin:0!important;">
-        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6 logo" style="border-bottom-right-radius:15px;border-top-right-radius:15px;">
-          <v-img
-            :width="55"
-            aspect-ratio="16/9"
-            cover
-            class="pb-6 d-block text-center mx-auto"
-          ></v-img>
-        </v-col>
+    <!-- <v-system-bar>
         <v-spacer />
         <v-avatar
           color="#748cab"
@@ -43,7 +30,70 @@ const viewProfile = (id: string): void => {
         >
           <span class="text-h5">{{ user.getInitials() }}</span>
         </v-avatar>
+    </v-system-bar>
+    <v-navigation-drawer
+      color="#1d2d44"
+      :width="80"
+      style="border-top-right-radius:15px;border-bottom-right-radius:15px"
+    >
+      <v-row align="center" class="flex-column" style="margin:0!important;">
+        <v-col cols="auto" width="100%" class="h-10 pt-6 pb-6 logo" style="border-bottom-right-radius:15px;border-top-right-radius:15px;">
+          <v-img
+            :width="55"
+            aspect-ratio="16/9"
+            cover
+            class="pb-6 d-block text-center mx-auto"
+          ></v-img>
+        </v-col>
       </v-row>
+      <v-spacer />
+      <v-divider></v-divider>
+      <v-row>
+        <v-col>
+          <v-avatar
+            color="#748cab"
+            size="55"
+            @click.stop="viewProfile(user.id ?? '')"
+            class="mb-4"
+          >
+            <span class="text-h5">{{ user.getInitials() }}</span>
+          </v-avatar>
+        </v-col>
+      </v-row>
+    </v-navigation-drawer> -->
+
+    <v-navigation-drawer
+      model-value
+      color="#1d2d44"
+      :width="80"
+      style="border-top-right-radius:15px;border-bottom-right-radius:15px"
+      rail
+    >
+      <v-row align="center" class="flex-column" style="margin:0!important;">
+        <v-col cols="auto" width="100%" class="h-9 pt-6 pb-6 logo" style="border-bottom-right-radius:15px;border-top-right-radius:15px;">
+          <v-img
+            :width="55"
+            aspect-ratio="16/9"
+            cover
+            class="pb-6 d-block text-center mx-auto"
+          ></v-img>
+        </v-col>
+      </v-row>
+      <template v-slot:append>
+        <v-row>
+          <v-col align="center">
+            <v-divider :thickness="2" color="#FFFFFF"></v-divider>
+            <v-avatar
+              color="#748cab"
+              size="40"
+              @click.stop="viewProfile(user.id ?? '')"
+              class="mb-4 mt-4"
+            >
+              <span class="text-h6">{{ user.getInitials() }}</span>
+            </v-avatar>
+          </v-col>
+        </v-row>
+      </template>
     </v-navigation-drawer>
 
     <v-main 

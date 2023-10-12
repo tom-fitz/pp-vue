@@ -3,55 +3,21 @@ import { Day, Program, Week, Workout } from '../Program';
 import { useProgramStore } from '../store';
 import { useRoute } from 'vue-router';
 import { mdiPlus } from '@mdi/js';
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useUserStore } from '@/modules/user/store';
-import { useExerciseStore } from '@/modules/exercise/store';
-import { Exercise } from '@/modules/exercise/Exercise';
 import CreateWorkout from '@/components/CreateWorkout.vue'
 
 const store = useProgramStore();
 const userStore = useUserStore();
-const exerciseStore = useExerciseStore();
 userStore.listUsers();
 
 const route = useRoute();
-
-const userList = computed(() => userStore.userList);
 
 store.getProgramById(route.params['id'].toString());
 
 const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'].toString()) ?? new Program().create());
 
 const plusIcon = ref(mdiPlus);
-
-const activeCol = ref({ index: -1, width: '160' });
-
-const setActiveCol = (index: number) => {
-    activeCol.value = { index, width: '215' }
-}
-
-const exerciseLookup = (e: string) => {
-    const query = {
-        name: e,
-    }
-    exerciseStore.getExercises(query);
-}
-
-const exItems = computed(() => exerciseStore.exercises);
-
-const search = ref('')
-
-const select = ref();
-
-const addExercise = (wIdx: number, weekIdx: number, dayIdx: number): void => {
-    program.value.weeks[weekIdx].days[dayIdx].workouts[wIdx].exercises.push(new Exercise());
-}
-
-// const saveWorkout = async (w: Workout) => {
-//     // await store.saveProgram(program.value);
-//     const wid = await store.saveWorkout(w);
-//     program.value.
-// }
 
 const saveProgram = async () => {
     await store.saveProgram(program.value);
@@ -68,14 +34,6 @@ const cancelSelection = (workout: Workout, weekIdx: number, dayIdx: number):void
     activeCol.value = { index: -1, width: '160' };
 }
 
-watch(search, (val, prevVal) => {
-  if (val && val !== prevVal && val !== select.value) {
-    exerciseLookup(val);
-  }
-});
-
-const valid = ref(false);
-
 const dialog = ref(false);
 
 const newWeek = () => {
@@ -87,6 +45,34 @@ const newWeek = () => {
     program.value.weeks.push(new Week(program.value.weeks.length + 1, resp));
 }
 
+const closeDialog = (e) => {
+    dialog.value = e;
+}
+
+const activeDay = ref({
+    weekIdx: 0,
+    dayIdx: 0,
+}).value;
+
+const setActiveDay = (wIdx: number, dIdx: number) => {
+    activeDay.weekIdx = wIdx;
+    activeDay.dayIdx = dIdx;
+}
+
+const openDialog = (w: number, d: number) => {
+    activeDay.weekIdx = w;
+    activeDay.dayIdx = d;
+    dialog.value = true;
+}
+
+const saveWorkout = async (e) => {
+    const day = program.value.weeks[activeDay.weekIdx].days[activeDay.dayIdx]
+    day.workouts[0] = e;
+    day.workouts[0].weekIdx = activeDay.weekIdx;
+    day.workouts[0].dayIdx = activeDay.dayIdx
+    await store.saveProgram(program.value);
+    setActiveDay(0, 0);
+}
 </script>
 <template>
 <v-container class="bg-color main pa-10">
@@ -103,13 +89,13 @@ const newWeek = () => {
             >Assign Patient</v-btn>
         </v-col>
     </v-row>
-    <v-row><v-col><h4 class="">{{ program.description }}</h4></v-col></v-row>
+    <v-row class="mt-0"><v-col><h4 class="mt-0">{{ program.description }}</h4></v-col></v-row>
     <v-row
-      v-for="(week) in program.weeks"
+      v-for="(week, wIdx) in program.weeks"
       :key="week.position"
     >
         <v-col
-            v-for="(day) in week.days"
+            v-for="(day, dIdx) in week.days"
             :key="day.position"
             class="day-main mt-6"
         >
@@ -130,13 +116,13 @@ const newWeek = () => {
                                 height="100%"
                                 class="d-flex transition-fast-in-fast-out day-hover v-card--reveal text-h5 pa-2 justify-center"
                             >
-                                <!-- <v-icon
-                                    size="x-large"
-                                    class="add-icon"
-                                    @click="open()"
-                                >{{ plusIcon }}</v-icon> -->
-                                <v-btn :prepend-icon="plusIcon" primary><CreateWorkout :show="dialog" /></v-btn>
-                                
+                                <v-btn 
+                                    class="add-btn-main" 
+                                    :icon="plusIcon" 
+                                    @click="openDialog(wIdx, dIdx)"
+                                    primary
+                                    size="x-small"
+                                ></v-btn>
                             </v-card>
                         </v-expand-transition>
                     </v-col>
@@ -145,16 +131,25 @@ const newWeek = () => {
         </v-col>
     </v-row>
     <v-row>
-        <v-btn 
-            variant="outlined"
-            primary
-            @click="newWeek()"
-        >Add Week</v-btn>
+        <v-col class="pl-0">
+            <v-btn 
+                variant="outlined"
+                primary
+                @click="newWeek()"
+            >Add Week</v-btn>
+        </v-col>
     </v-row>
-    
+    <CreateWorkout 
+        :model-value="dialog" 
+        @update:model-value="closeDialog" 
+        @update:save-workout="saveWorkout"
+    />
 </v-container>
 </template>
 <style>
+.add-btn-main {
+    background-color: rgba(var(--v-theme-surface), .5) !important;
+}
 .day-hover {
     background-color: rgba(var(--v-theme-primary), .8) !important;
     text-align: center !important;
@@ -180,7 +175,7 @@ const newWeek = () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 300px; /* Adjust the max-width as needed */
+  max-width: 300px;
 }
 .v-field__input {
   font-size: 12px !important;
