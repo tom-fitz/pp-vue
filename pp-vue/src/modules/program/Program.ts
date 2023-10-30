@@ -8,6 +8,7 @@ export class Workout {
         public cooldown: string = "",
         public position: number = 0,
         public dayIndex: number = 0,
+        public weekIndex: number = 0,
         public id: string = "",
         public programIds: string[] = []
     ){}
@@ -34,6 +35,7 @@ export class Day {
         public long_title: string = '',
         public short_title: string = '',
         public workouts: Workout[] = [],
+        public workout: Workout = new Workout(),
         public weekIndex: number = 0
     ){}
 

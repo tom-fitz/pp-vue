@@ -82,7 +82,7 @@ const viewProfile = (id: string): void => {
       <template v-slot:append>
         <v-row>
           <v-col align="center">
-            <v-divider :thickness="2" color="#FFFFFF"></v-divider>
+            <v-divider :thickness="1" color="#FFFFFF"></v-divider>
             <v-avatar
               color="#748cab"
               size="40"

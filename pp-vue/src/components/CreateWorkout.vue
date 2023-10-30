@@ -1,14 +1,27 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { Day, Program, Workout } from '@/modules/program/Program';
+import { Workout } from '@/modules/program/Program';
+import { Exercise } from '@/modules/exercise/Exercise';
 import { useExerciseStore } from '@/modules/exercise/store';
 import { mdiPlus } from '@mdi/js';
 
 const exerciseStore = useExerciseStore();
 
-const props = defineProps({ 
+const props = defineProps({
+    workout : {
+        type: Workout,
+        default: new Workout()
+    },
     modelValue: {
         type: Boolean,
+        required: true,
+    },
+    weekIdx: {
+        type: Number,
+        required: true,
+    },
+    dayIdx: {
+        type: Number,
         required: true,
     }
 });
@@ -16,26 +29,27 @@ const emits = defineEmits(['update:modelValue', 'update:saveWorkout']);
 
 const valid = ref(false);
 
-const workout: Workout = ref(new Workout());
+let wo: Workout = ref(props.workout).value;
 
 const close = () => { 
     emits('update:modelValue', false); 
-    workout.value = new Workout() 
+    wo = new Workout();
 }
 
 
 const exItems = computed(() => exerciseStore.exercises);
 
 const saveWorkout = () => {
-    // validation goes here
-    emits('update:saveWorkout', workout);
+    wo.dayIndex = props.dayIdx;
+    wo.weekIndex = props.weekIdx;
+    emits('update:saveWorkout', wo);
     emits('update:modelValue', false);
     close();
 };
 
 const plusIcon = ref(mdiPlus);
 
-const addExercise = () => workout.value.exercise.push(new Exercise());
+const addExercise = () => wo.exercises.push(new Exercise());
 
 const search = ref('');
 const select = ref();
@@ -65,7 +79,7 @@ watch(search, (val, prevVal) => {
             <v-row>
                 <v-col class="ma-0 pa-0">
                     <v-text-field
-                        v-model="workout.name"
+                        v-model="wo.name"
                         variant="underlined"
                         placeholder="title (optional)"
                     ></v-text-field>
@@ -74,14 +88,14 @@ watch(search, (val, prevVal) => {
             <v-row>
                 <v-col class="ma-0 pa-0">
                     <v-text-field
-                        v-model="workout.warmup"
+                        v-model="wo.warmup"
                         variant="underlined"
                         placeholder="add warmup"
                     ></v-text-field>
                 </v-col>
             </v-row>
             <v-row
-                v-for="(ex) in workout.exercises"
+                v-for="(ex) in wo.exercises"
                 :key="ex.position"
             >
                 <v-col class="mt-0 mb-0 ml-5 mr-5 pa-0" align="center">
@@ -89,7 +103,6 @@ watch(search, (val, prevVal) => {
                         <v-autocomplete
                             v-model="ex.title"
                             v-model:search="search"
-                            :value="title"
                             :loading="exerciseStore.loading"
                             :items="exItems"
                             item-title="name"
@@ -123,7 +136,7 @@ watch(search, (val, prevVal) => {
             </v-row>
             <v-row>
                 <v-text-field
-                    v-model="workout.cooldown"
+                    v-model="wo.cooldown"
                     variant="underlined"
                     placeholder="add cooldown"
                 ></v-text-field>

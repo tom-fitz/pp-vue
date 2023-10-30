@@ -15,23 +15,27 @@ const route = useRoute();
 
 store.getProgramById(route.params['id'].toString());
 
-const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'].toString()));
+const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'])).value ?? new Program();
 
+// program.weeks[0].days[2]?.workouts.push(new Workout());
+// const program = computed(() => {
+//     const p = store.programs.find((p: Program) => p.id === route.params['id']);
+//     p.weeks[0].days[2].workouts.push(new Workout());
+//     return p
+// });
 const plusIcon = ref(mdiPlus);
 
 const saveProgram = async () => {
-    await store.saveProgram(program.value);
+    await store.saveProgram(program);
 }
 
 const cancelSelection = (workout: Workout, weekIdx: number, dayIdx: number):void => {
-    const p = program.value.weeks[weekIdx].days[dayIdx];
+    const p = program.weeks[weekIdx].days[dayIdx];
     if (p.workouts.length > 1) {
         p.workouts.splice(workout.position, 1)
     } else {
         p.workouts[workout.position].reset();
     }
-
-    activeCol.value = { index: -1, width: '160' };
 }
 
 const dialog = ref(false);
@@ -42,10 +46,10 @@ const newWeek = () => {
     dayNames.forEach((x: string[], idx: number) => {
         resp.push(new Day(idx, x[0], x[1]))
     });
-    program.value.weeks.push(new Week(program.value.weeks.length + 1, resp));
+    program.weeks.push(new Week(program.weeks.length + 1, resp));
 }
 
-const closeDialog = (e) => {
+const closeDialog = (e: any) => {
     dialog.value = e;
 }
 
@@ -65,12 +69,15 @@ const openDialog = (w: number, d: number) => {
     dialog.value = true;
 }
 
-const saveWorkout = async (e) => {
-    const day = program.value.weeks[activeDay.weekIdx].days[activeDay.dayIdx]
-    day.workouts[0] = e;
-    day.workouts[0].weekIdx = activeDay.weekIdx;
-    day.workouts[0].dayIdx = activeDay.dayIdx
-    await store.saveProgram(program.value);
+const saveWorkout = async (w: Workout) => {
+    console.log("day: ", w.dayIndex);
+    console.log("weekIdx: ", w.weekIndex);
+    
+    const day = program.weeks[w.weekIndex].days[w.dayIndex];
+    console.log("day: ", day)
+    w.programIds.push(program.id);
+    await store.saveWorkout(w);
+    await store.saveProgram(program);
     setActiveDay(0, 0);
 }
 </script>
@@ -91,12 +98,12 @@ const saveWorkout = async (e) => {
     </v-row>
     <v-row class="mt-0"><v-col><h4 class="mt-0">{{ program.description }}</h4></v-col></v-row>
     <v-row
-      v-for="(week) in program.weeks"
-      :key="week.position"
+      v-for="(week, wIdx) in program.weeks"
+      :key="wIdx"
     >
         <v-col
-            v-for="(day) in week.days"
-            :key="day.position"
+            v-for="(day, dIdx) in week.days"
+            :key="dIdx"
             class="day-main mt-6"
         >
             <v-row>
@@ -104,51 +111,22 @@ const saveWorkout = async (e) => {
                     <small all class="ml-2">{{ day.short_title }}</small>
                 </v-col>
             </v-row>
-            <v-row
-                v-for="wo in day.workouts"
-                :key="wo.position"
-            >
-                    <v-col class="main-body day-border pa-0">
-                        <v-card class="day-hover">
-                            <code>{{ day }}</code>
-                        </v-card>
-                        <!-- <template v-if="wo.exercises[0].id !== ''">
-                            <v-card class="day-hover">
-                                <v-card-title>{{ wo.Name }}</v-card-title>
-                            </v-card>
-                        </template> -->
-                        <!-- <v-expand-transition>
-                            <v-card
-                                v-if="isHovering"
-                                height="100%"
-                                class="d-flex transition-fast-in-fast-out day-hover v-card--reveal text-h5 pa-2 justify-center"
-                            >
-                                <v-btn 
-                                    class="add-btn-main" 
-                                    :icon="plusIcon" 
-                                    @click="openDialog(wIdx, dIdx)"
-                                    primary
-                                    size="x-small"
-                                ></v-btn>
-                            </v-card>
-                        </v-expand-transition> -->
-                        <!-- <v-hover v-slot="{ hover }">
-                        <v-card
-                            height="100%"
-                            class="day-hover pa-2 justify-center { 'on-hover': hover }"
-                        >
-                            <v-btn 
-                                class="add-btn-main { 'show-btn': hover }" 
-                                :icon="plusIcon" 
-                                @click="openDialog(wIdx, dIdx)"
-                                primary
-                                size="x-small"
-                            ></v-btn>
-                        </v-card>
-                        </v-hover> -->
-                    </v-col>
-                
-                <!-- workout display -->
+            <v-row style="height: 250px">
+                <v-col class="day-border day-body pa-0" align-self="end">
+                    <div class="pa-4">
+                        <h3>{{ day.workout.name }}</h3>
+                        <h6>{{ day.workout.warmup }}</h6>
+                    </div>
+                    <v-btn 
+                        @click.stop="openDialog(wIdx, dIdx)"
+                        variant="outlined"
+                        primary
+                        block
+                        size="x-small"
+                        class="pa-0 ma-0"
+                        :prepend-icon="plusIcon"
+                    >{{ day.workout.name !== '' ? 'Edit' : 'Add' }} Workout</v-btn>
+                </v-col>
             </v-row>
         </v-col>
     </v-row>
@@ -162,13 +140,19 @@ const saveWorkout = async (e) => {
         </v-col>
     </v-row>
     <CreateWorkout 
-        :model-value="dialog" 
+        :model-value="dialog"
+        :week-idx="activeDay.weekIdx"
+        :day-idx="activeDay.dayIdx"
+        :workout="program.weeks[activeDay.weekIdx].days[activeDay.dayIdx].workout"
         @update:model-value="closeDialog" 
         @update:save-workout="saveWorkout"
     />
 </v-container>
 </template>
 <style scoped>
+.day-body {
+    min-height: 250px;
+}
 .v-card {
   transition: filter .4s ease-in-out;
 }
@@ -182,7 +166,7 @@ const saveWorkout = async (e) => {
   opacity: 1;
 }
 .add-btn-main {
-  /* background-color: rgba(var(--v-theme-surface), .5) !important; */
+  background-color: rgba(var(--v-theme-surface), .5) !important;
   opacity: 0;
   background-color: #fff !important;
   color: #000 !important;
@@ -192,6 +176,7 @@ const saveWorkout = async (e) => {
     background-color: rgba(var(--v-theme-primary), .8) !important;
     text-align: center !important;
     color: rgba(var(--v-theme-surface), .7) !important;
+    min-height: 225px;
 }
 .day-border {
     border: solid .5px rgba(var(--v-theme-surface), .3)

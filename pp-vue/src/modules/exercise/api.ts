@@ -12,7 +12,6 @@ import {
     child,
     set
  } from 'firebase/database';
-import { mdiConsoleNetworkOutline } from '@mdi/js';
 
 interface IApi {
     getExercises: (exParams: IExerciseParams) => Promise<Exercise[]>

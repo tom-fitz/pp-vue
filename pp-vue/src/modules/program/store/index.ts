@@ -15,6 +15,16 @@ export const useProgramStore = defineStore("programStore", {
         getPrograms: (state) => state.programs,
     },
     actions: {
+        async getAllPrograms (): Promise<void> {
+            this.loading = true;
+            try {
+                this.programs = [...await api.getAllPrograms()];
+            } catch (err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
+        },
         async createProgramFS (program: Program): Promise<string> {
             this.loading = true;
             try {
@@ -106,6 +116,13 @@ export const useProgramStore = defineStore("programStore", {
                 const wid = await api.saveWorkout(workout);
                 workout.id = wid;
                 this.workouts = [...this.workouts, workout];
+                workout.programIds.forEach((id: string) => {
+                    this.programs.forEach((p: Program) => {
+                        if (p.id === id) {
+                            p.weeks[workout.weekIndex].days[workout.dayIndex].workout = workout;
+                        }
+                    });
+                });
                 return wid;
             } catch (err) {
                 this.errorMsg = err;

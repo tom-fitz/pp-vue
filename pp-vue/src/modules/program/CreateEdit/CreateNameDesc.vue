@@ -19,33 +19,33 @@ const createSaveProgram = async () => {
 const cancel = () => router.push({ name: 'program-dashboard' });
 </script>
 <template>
-    <v-card color="transparent" elevation="0">
-        <v-card-title class="text-h4">Create New Program</v-card-title>
-        <span class="input-ph">Name</span>
-        <v-text-field
-            v-model="program.name"
-            required
-            class="pt-4"
-            variant="outlined"
-        ></v-text-field>
-        <span class="input-ph">Description (optional)</span>
-        <v-textarea
-            v-model="program.description"
-            class="pt-4"
-            variant="outlined"
-        ></v-textarea>
-        <v-card-actions>
-            <v-btn
-                size="large"
-                color="#1F213A"
-                variant="flat" 
-                class="text-none pl-6 pr-6"
-                @click.stop="createSaveProgram()"
-            >Save &amp; Add workouts</v-btn>
+    <v-container>
+        <v-card color="transparent" elevation="0">
+            <v-card-title class="text-h4">Create New Program</v-card-title>
+            <span class="input-ph">Name</span>
+            <v-text-field
+                v-model="program.name"
+                required
+                class="pt-4"
+                variant="outlined"
+            ></v-text-field>
+            <span class="input-ph">Description (optional)</span>
+            <v-textarea
+                v-model="program.description"
+                class="pt-4"
+                variant="outlined"
+            ></v-textarea>
+            <v-card-actions>
+                <v-btn
+                    variant="outlined"
+                    primary
+                    @click.stop="createSaveProgram()"
+                >Save &amp; Add workouts</v-btn>
 
-            <v-btn color="white" @click.stop="cancel()">Cancel</v-btn>
-        </v-card-actions>
-    </v-card>
+                <v-btn color="white" @click.stop="cancel()">Cancel</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-container>
 </template>
 <style scoped>
 .input-ph {

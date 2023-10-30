@@ -14,6 +14,7 @@ const programStore = useProgramStore();
 const userStore = useUserStore();
 const router = useRouter();
 
+programStore.getAllPrograms();
 programStore.getProgramTemplates();
 userStore.listUsers();
 
@@ -22,6 +23,8 @@ const drawer = ref();
 const program = ref(new Program());
 
 const users = computed(() => userStore.userList);
+
+const programs = computed(() => programStore.programs);
 
 const viewUserProfile = (id: string) => {
     if (id === '') {
@@ -60,18 +63,40 @@ const headers: Headers = [
     ]
 ];
 
+const programHeaders: Headers = [
+    [
+        {
+            title: 'Program name',
+            key: 'name',
+            sortable: false,
+        },
+        {
+            title: '',
+            key: 'actions',
+            sortable: false,
+        }
+    ]
+];
+
 const rightArrow = ref(mdiChevronRight);
 
 const templateSelected = (id: string | any) => {
     program.value = programStore.templates.find((t: Program) => t.id === id) as Program;
 }
 
-const createProgram = () => router.push({ name: 'program-create'})
+const createProgram = () => router.push({ name: 'program-create'});
+
+const viewProgram = (id: string) => {
+    if (id === '') {
+        return;
+    }
+    router.push({name: 'program-create-workouts', params: {id}});
+}
 
 </script>
 
 <template>
-    <v-container>
+    <v-container class="main day-main">
         <v-row>
             <v-col cols="auto">
                 <v-card-title class="text-h3">Program Dashboard</v-card-title>
@@ -89,6 +114,31 @@ const createProgram = () => router.push({ name: 'program-create'})
                     @click.stop="createProgram()"
                     data-test="program-create-btn"
                     >New Program</v-btn>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-data-table
+                    :items="programs"
+                    :headers="programHeaders"
+                    :hide-default-footer="true"
+                    disable-pagination
+                    density="compact"
+                >
+                    <template v-slot:item="{ item }">
+                        <tr>
+                            <td>{{ item.columns.name }}</td>
+                            <td class="bg-color">View <v-icon
+                                size="small"
+                                class="me-2"
+                                @click="viewProgram(item.value)"
+                            >
+                                {{ rightArrow }}
+                            </v-icon></td>
+                        </tr>
+                    </template>
+                    <template #bottom></template>
+                </v-data-table>
             </v-col>
         </v-row>
         <v-row>
@@ -140,7 +190,11 @@ const createProgram = () => router.push({ name: 'program-create'})
     </v-navigation-drawer>
 </template>
 <style>
-.bg-color {
-    background-color: #141625 !important;
+.main {
+    max-width: 96% !important;
+}
+.day-main {
+    background-color:rgb(var(--v-theme-secondary));
+    min-height: 80%;
 }
 </style>

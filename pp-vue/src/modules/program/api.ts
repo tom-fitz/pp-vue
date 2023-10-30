@@ -17,6 +17,7 @@ interface IApi {
     getProgramById: (id: string) => Promise<Program>;
     saveProgram: (program: Program) => Promise<void>;
     saveWorkout: (workout: Workout) => Promise<string>;
+    getAllPrograms: () => Promise<Program[]>;
 }
 
 const createProgram = async (program: Program): Promise<string> => {
@@ -84,7 +85,16 @@ const saveWorkout = async (workout: Workout): Promise<string> => {
     return newPostKey;
 }
 
-// const getExercises = async (): Promise<> => {}
+const getAllPrograms = async (): Promise<Program[]> => {
+    const dbRef = ref(getDatabase(), `/programs`);
+    const programs: Program[] = [];
+    const snapshot = (await get(dbRef)).val();
+    Object.keys(snapshot).forEach((key: string) => {
+        snapshot[key].id = key;
+        programs.push(snapshot[key]);
+    });
+    return programs;
+}
 
 export const api: IApi = {
     createProgram,
@@ -94,7 +104,8 @@ export const api: IApi = {
     createProgramFS,
     getProgramById,
     saveProgram,
-    saveWorkout
+    saveWorkout,
+    getAllPrograms
 }
 
 export default api;
