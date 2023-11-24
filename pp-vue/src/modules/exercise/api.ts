@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { formatQuery, type Exercise, type IExerciseParams } from '../exercise/Exercise';
+import { formatQuery, Exercise, type IExerciseParams } from '../exercise/Exercise';
 import { 
     getDatabase, 
     query, 
@@ -16,6 +16,7 @@ import {
 interface IApi {
     getExercises: (exParams: IExerciseParams) => Promise<Exercise[]>
     createExercise: (ex: Exercise) => Promise<string>
+    getExerciseByName: (name: string) => Promise<Exercise>
 }
 
 const getExercises = async (params: IExerciseParams): Promise<Exercise[]> => {
@@ -77,10 +78,27 @@ const createExercise = async (ex: Exercise): Promise<string> => {
     return id ?? '';
 }
 
+const getExerciseByName = async (name: string): Promise<Exercise> => {
+    const db = getDatabase();
+    const exQueryByName = query(
+        ref(db, "exercises"),
+        orderByChild("name"),
+        equalTo(name)
+    );
+    const snapshot = await get(exQueryByName);
+    console.log("exQueryByName: ", exQueryByName);
+    if (!snapshot.exists()) {
+        const e = snapshot.val();
+        console.log("e exists: ", e);
+    } 
+    return new Exercise();
+}
+
 
 const api: IApi = {
     getExercises,
     createExercise,
+    getExerciseByName
 }
 
 export default api;

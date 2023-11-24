@@ -139,9 +139,8 @@ const cancelCreateEx = () => {
                     <v-col cols="6" class="pt-0">
                         <v-btn
                             block
-                            rounded="xl"
                             size="large"
-                            color="#1F213A"
+                            color="accent"
                             variant="flat" 
                             class="text-none"
                             @click.stop="createExercise()"
@@ -152,12 +151,10 @@ const cancelCreateEx = () => {
                     <v-col cols="6" class="pt-0">
                         <v-btn
                             block
-                            rounded="xl"
                             size="large"
-                            color="transparent"
-                            variant="flat" 
+                            color="surface"
+                            variant="outlined" 
                             class="text-none"
-                            style="border: solid 1px #93949B"
                             @click.stop="cancelCreateEx()"
                             data-test="invoice-item-add"
                         >Cancel</v-btn>
@@ -206,9 +203,8 @@ const cancelCreateEx = () => {
                     <v-col cols="6" class="pt-0">
                         <v-btn
                             block
-                            rounded="xl"
                             size="large"
-                            color="#1F213A"
+                            color="accent"
                             variant="flat" 
                             class="text-none"
                             @click.stop="queryExercise()"
@@ -219,14 +215,11 @@ const cancelCreateEx = () => {
                     <v-col cols="6" class="pt-0">
                         <v-btn
                             block
-                            rounded="xl"
                             size="large"
-                            color="transparent"
-                            variant="flat" 
+                            color="surface"
+                            variant="outlined" 
                             class="text-none"
-                            style="border: solid 1px #93949B"
                             @click.stop="resetQuery()"
-                            data-test="invoice-item-add"
                         >Reset</v-btn>
                     </v-col>
                 </v-row>
@@ -235,17 +228,17 @@ const cancelCreateEx = () => {
                         <v-table
                             fixed-header
                             height="300px"
-                            style="background-color:transparent !important; border: solid 1px #93949B"
+                            class="table-main"
                         >
                             <thead>
                             <tr>
-                                <th class="text-left" style="background-color: #141625;">
+                                <th class="text-left table-header">
                                 Name
                                 </th>
-                                <th class="text-left" style="background-color: #141625;">
+                                <th class="text-left table-header">
                                 Type
                                 </th>
-                                <th class="text-left" style="background-color: #141625;">
+                                <th class="text-left table-header">
                                 Difficulty
                                 </th>
                             </tr>
@@ -265,14 +258,17 @@ const cancelCreateEx = () => {
                         </v-table>
                     </v-col>
                 </v-row>
-                <template v-if="exercise.id && exercise.id !== ''">
-                    <v-row>
-                        <v-col cols="12">
-                            <pre :v-text="exercise">{{ exercise }}</pre>
-                        </v-col>
-                    </v-row>
-                </template>
             </v-col>
         </v-row>
     </v-container>
 </template>
+<style scoped>
+.table-main {
+    background-color:transparent !important; 
+    border: solid 1px rgb(var(--v-theme-surface));
+    color:rgb(var(--v-theme-surface))
+}
+.table-header {
+    background-color: rgb(var(--v-theme-accent)) !important;
+}
+</style>

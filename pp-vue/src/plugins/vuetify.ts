@@ -15,9 +15,9 @@ const darkStyles: ThemeDefinition = {
     surface: '#f0ebd8',
     primary: '#1d2d44',
     secondary: '#3e5c76',
-    accent: '#748cab',
+    accent: '#4ec3e0',
     error: '#f44336',
-    warning: '#ff9800', 
+    warning: '#ff9800',
     info: '#3f51b5',
     success: '#8bc34a'
   }

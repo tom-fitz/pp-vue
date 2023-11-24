@@ -17,26 +17,27 @@ const { user } = storeToRefs(userStore);
 const updateUser = () => {
     userStore.updateUser(user.value);
     snackbar.value = true;
-}
+};
 
-const timeout = ref(3000)
+const timeout = ref(3000);
 
 </script>
 <template>
+<v-container class="main">
     <v-form v-model="valid" :min-width="600">
-        <v-container justify="center">
+        <v-container class="bg-color pa-14" justify="center">
             <v-row>
-                <!-- <v-col cols="auto">
+                <v-col cols="auto">
                     <v-avatar
-                        :color="'#7C5DF9'"
+                        color="accent"
                         size="125"
                     >
-                        <span class="text-h3">{{ updatedUser.getInitials().toUpperCase() }}</span>
+                        <span class="text-h3 icon-text">{{ currentUser.getInitials().toUpperCase() }}</span>
                     </v-avatar>
-                </v-col> -->
-                <v-col cols="auto"><span class="text-h3">{{ user.displayName ? user.displayName : '' }}</span></v-col>
+                </v-col>
+                <v-col class="pt-12" cols="auto"><span class="text-h3">{{ user.displayName ? user.displayName : '' }}</span></v-col>
                 <v-spacer></v-spacer>
-                <v-col cols="auto">
+                <v-col class="pt-14 pr-12" cols="auto">
                     <UserLogout />
                 </v-col>
             </v-row>
@@ -92,9 +93,8 @@ const timeout = ref(3000)
                 <v-col cols="6">
                     <v-btn
                         block
-                        rounded="xl"
                         size="large"
-                        color="#1F213A"
+                        color="accent"
                         variant="flat" 
                         class="text-none"
                         @click.stop="updateUser()"
@@ -109,7 +109,6 @@ const timeout = ref(3000)
       :timeout="timeout"
     >
       {{ userStore.successMsg }}
-
       <template v-slot:actions>
         <v-btn
           color="blue"
@@ -120,4 +119,16 @@ const timeout = ref(3000)
         </v-btn>
       </template>
     </v-snackbar>
+</v-container>
 </template>
+<style scoped>
+.main {
+    max-width: 96% !important;
+}
+.bg-color {
+    background-color:rgb(var(--v-theme-secondary));
+}
+.icon-text {
+    color: rgb(var(--v-theme-surface)) !important;
+}
+</style>

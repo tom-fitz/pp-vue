@@ -42,9 +42,13 @@ const exItems = computed(() => exerciseStore.exercises);
 const saveWorkout = () => {
     wo.dayIndex = props.dayIdx;
     wo.weekIndex = props.weekIdx;
-    emits('update:saveWorkout', wo);
-    emits('update:modelValue', false);
-    close();
+    wo.exercises.forEach((ex: Exercise) => {
+        const storeEx = exerciseStore.getExerciseByName(ex.name);
+        console.log("store ex: ", storeEx);
+    })
+    // emits('update:saveWorkout', wo);
+    // emits('update:modelValue', false);
+    // close();
 };
 
 const plusIcon = ref(mdiPlus);
@@ -74,14 +78,14 @@ watch(search, (val, prevVal) => {
         width="auto"
         persistent
       >
-      <v-sheet  class="bg-color">
+      <v-sheet class="bg-color">
       <v-form v-model="valid" class="ma-6 pa-4" style="min-width:350px;">
             <v-row>
                 <v-col class="ma-0 pa-0">
                     <v-text-field
                         v-model="wo.name"
                         variant="underlined"
-                        placeholder="title (optional)"
+                        placeholder="Title"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -90,7 +94,7 @@ watch(search, (val, prevVal) => {
                     <v-text-field
                         v-model="wo.warmup"
                         variant="underlined"
-                        placeholder="add warmup"
+                        placeholder="Warmup"
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -98,7 +102,7 @@ watch(search, (val, prevVal) => {
                 v-for="(ex) in wo.exercises"
                 :key="ex.position"
             >
-                <v-col class="mt-0 mb-0 ml-5 mr-5 pa-0" align="center">
+                <v-col class="mt-0 mb-0 ml-3 mr-3 pa-0" align="center">
                     <v-row>
                         <v-autocomplete
                             v-model="ex.title"
@@ -138,7 +142,7 @@ watch(search, (val, prevVal) => {
                 <v-text-field
                     v-model="wo.cooldown"
                     variant="underlined"
-                    placeholder="add cooldown"
+                    placeholder="Cooldown"
                 ></v-text-field>
             </v-row>
             <v-row>

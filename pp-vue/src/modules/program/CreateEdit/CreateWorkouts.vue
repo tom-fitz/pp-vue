@@ -17,12 +17,6 @@ store.getProgramById(route.params['id'].toString());
 
 const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'])).value ?? new Program();
 
-// program.weeks[0].days[2]?.workouts.push(new Workout());
-// const program = computed(() => {
-//     const p = store.programs.find((p: Program) => p.id === route.params['id']);
-//     p.weeks[0].days[2].workouts.push(new Workout());
-//     return p
-// });
 const plusIcon = ref(mdiPlus);
 
 const saveProgram = async () => {
@@ -70,11 +64,6 @@ const openDialog = (w: number, d: number) => {
 }
 
 const saveWorkout = async (w: Workout) => {
-    console.log("day: ", w.dayIndex);
-    console.log("weekIdx: ", w.weekIndex);
-    
-    const day = program.weeks[w.weekIndex].days[w.dayIndex];
-    console.log("day: ", day)
     w.programIds.push(program.id);
     await store.saveWorkout(w);
     await store.saveProgram(program);
@@ -112,20 +101,23 @@ const saveWorkout = async (w: Workout) => {
                 </v-col>
             </v-row>
             <v-row style="height: 250px">
-                <v-col class="day-border day-body pa-0" align-self="end">
+                <v-col class="day-border day-body pa-0">
                     <div class="pa-4">
                         <h3>{{ day.workout.name }}</h3>
                         <h6>{{ day.workout.warmup }}</h6>
                     </div>
-                    <v-btn 
-                        @click.stop="openDialog(wIdx, dIdx)"
-                        variant="outlined"
-                        primary
-                        block
-                        size="x-small"
-                        class="pa-0 ma-0"
-                        :prepend-icon="plusIcon"
-                    >{{ day.workout.name !== '' ? 'Edit' : 'Add' }} Workout</v-btn>
+                    <v-row>
+                        <v-col class="d-flex justify-center align-center">
+                            <v-btn 
+                                @click.stop="openDialog(wIdx, dIdx)"
+                                variant="outlined"
+                                primary
+                                size="x-small"
+                                class="pl-8 pr-8"
+                                :prepend-icon="plusIcon"
+                            >{{ day.workout.name !== '' ? 'Edit' : 'Add' }} Workout</v-btn>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
         </v-col>
@@ -137,6 +129,21 @@ const saveWorkout = async (w: Workout) => {
                 primary
                 @click="newWeek()"
             >Add Week</v-btn>
+            <v-btn 
+                v-if="program.weeks.length > 1"
+                variant="outlined"
+                secondary
+                @click.stop="program.weeks.pop()"
+            >Delete Week</v-btn>
+        </v-col>
+    </v-row>
+    <v-row>
+        <v-col class="pl-0">
+            <v-btn 
+                variant="outlined"
+                secondary
+                @click="newWeek()"
+            >Save Program</v-btn>
         </v-col>
     </v-row>
     <CreateWorkout 

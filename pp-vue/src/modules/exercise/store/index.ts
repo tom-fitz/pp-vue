@@ -34,6 +34,17 @@ export const useExerciseStore = defineStore('exerciseStore', {
             } finally {
                 this.loading = false;
             }
+        },
+        async getExerciseByName (name: string): Promise<Exercise | void> {
+            this.loading = true;
+            try {
+                const ex = await api.getExerciseByName(name)
+                return ex;
+            } catch(err) {
+                this.errorMsg = err;
+            } finally {
+                this.loading = false;
+            }
         }
     },
 });

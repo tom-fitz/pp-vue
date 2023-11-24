@@ -96,81 +96,104 @@ const viewProgram = (id: string) => {
 </script>
 
 <template>
-    <v-container class="main day-main">
+    <v-container>
         <v-row>
             <v-col cols="auto">
                 <v-card-title class="text-h3">Program Dashboard</v-card-title>
             </v-col>
             <v-spacer></v-spacer>
-            <v-col cols="auto">
+            <v-col cols="auto" class="mt-4">
                 <v-btn
                     :prepend-icon="mdiPlus"
                     block
-                    rounded="xl" 
                     size="large" 
-                    color="#7C5DF9" 
-                    variant="flat" 
+                    color="surface" 
+                    variant="outlined" 
                     class="text-none"
                     @click.stop="createProgram()"
-                    data-test="program-create-btn"
                     >New Program</v-btn>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-data-table
-                    :items="programs"
-                    :headers="programHeaders"
-                    :hide-default-footer="true"
-                    disable-pagination
-                    density="compact"
-                >
-                    <template v-slot:item="{ item }">
-                        <tr>
-                            <td>{{ item.columns.name }}</td>
-                            <td class="bg-color">View <v-icon
-                                size="small"
-                                class="me-2"
-                                @click="viewProgram(item.value)"
+                <v-container class="bg-color main pa-10">
+                    <!-- <v-row>
+                        <v-col cols="auto">
+                            <v-card-title class="text-h3">Program Dashboard</v-card-title>
+                        </v-col>
+                        <v-spacer></v-spacer>
+                        <v-col cols="auto">
+                            <v-btn
+                                :prepend-icon="mdiPlus"
+                                block
+                                rounded="xl" 
+                                size="large" 
+                                color="#7C5DF9" 
+                                variant="flat" 
+                                class="text-none"
+                                @click.stop="createProgram()"
+                                data-test="program-create-btn"
+                                >New Program</v-btn>
+                        </v-col>
+                    </v-row> -->
+                    <v-row>
+                        <v-col>
+                            <v-data-table
+                                :items="programs"
+                                :headers="programHeaders"
+                                :hide-default-footer="true"
+                                disable-pagination
+                                density="compact"
                             >
-                                {{ rightArrow }}
-                            </v-icon></td>
-                        </tr>
-                    </template>
-                    <template #bottom></template>
-                </v-data-table>
+                                <template v-slot:item="{ item }">
+                                    <tr>
+                                        <td>{{ item.columns.name }}</td>
+                                        <td class="bg-color">View <v-icon
+                                            size="small"
+                                            class="me-2"
+                                            @click="viewProgram(item.value)"
+                                        >
+                                            {{ rightArrow }}
+                                        </v-icon></td>
+                                    </tr>
+                                </template>
+                                <template #bottom></template>
+                            </v-data-table>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="auto" style="border:solid 1px grey;border-radius:5px">
+                            <v-data-table
+                                :items="users"
+                                :headers="headers"
+                                :hide-default-footer="true"
+                                :items-per-page="50"
+                                disable-pagination
+                                density="compact"
+                            >
+                                <template v-slot:item="{ item }">
+                                    <tr>
+                                        <td class="bg-color">{{ item.columns.firstName }}</td>
+                                        <td class="bg-color">{{ item.columns.lastName }}</td>
+                                        <td class="bg-color">{{ item.columns.email }}</td>
+                                        <td class="bg-color">{{ item.columns.phoneNumber }}</td>
+                                        <td class="bg-color">View <v-icon
+                                            size="small"
+                                            class="me-2"
+                                            @click="viewUserProfile(item.value)"
+                                        >
+                                            {{ rightArrow }}
+                                        </v-icon></td>
+                                    </tr>
+                                </template>
+                                <template #bottom></template>
+                            </v-data-table> 
+                        </v-col>
+                    </v-row>
+                    <v-row></v-row>
+                </v-container>
             </v-col>
         </v-row>
-        <v-row>
-            <v-col cols="auto" style="border:solid 1px grey;border-radius:5px">
-                <v-data-table
-                    :items="users"
-                    :headers="headers"
-                    :hide-default-footer="true"
-                    :items-per-page="50"
-                    disable-pagination
-                    density="compact"
-                >
-                    <template v-slot:item="{ item }">
-                        <tr>
-                            <td class="bg-color">{{ item.columns.firstName }}</td>
-                            <td class="bg-color">{{ item.columns.lastName }}</td>
-                            <td class="bg-color">{{ item.columns.email }}</td>
-                            <td class="bg-color">{{ item.columns.phoneNumber }}</td>
-                            <td class="bg-color">View <v-icon
-                                size="small"
-                                class="me-2"
-                                @click="viewUserProfile(item.value)"
-                            >
-                                {{ rightArrow }}
-                            </v-icon></td>
-                        </tr>
-                    </template>
-                    <template #bottom></template>
-                </v-data-table> 
-            </v-col>
-        </v-row>
-        <v-row></v-row>
     </v-container>
     <v-navigation-drawer
         v-model="drawer"
@@ -193,8 +216,14 @@ const viewProgram = (id: string) => {
 .main {
     max-width: 96% !important;
 }
+.main-body {
+    min-height: 225px;
+}
 .day-main {
     background-color:rgb(var(--v-theme-secondary));
-    min-height: 80%;
+    min-height: 225px;
+}
+.bg-color {
+    background-color:rgb(var(--v-theme-secondary));
 }
 </style>

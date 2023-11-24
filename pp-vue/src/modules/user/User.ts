@@ -15,13 +15,15 @@ export class User {
     ){}
 
     set(user: fbUser) {
-        this.id = user.uid;
-        this.email = user.email ?? "";
-        this.isAdmin = user.email === 'a@a.com';
-        this.displayName = user.displayName ?? '';
-        if (user.displayName) {
-            this.firstName = user.displayName?.split(' ')[0] ?? '';
-            this.lastName = user.displayName?.split(' ')[1] ?? '';
+        if (user) {
+            this.id = user.uid;
+            this.email = user.email ?? "";
+            this.isAdmin = user.email === 'a@a.com';
+            this.displayName = user.displayName ?? '';
+            if (user.displayName) {
+                this.firstName = user.displayName?.split(' ')[0] ?? '';
+                this.lastName = user.displayName?.split(' ')[1] ?? '';
+            }
         }
     }
 

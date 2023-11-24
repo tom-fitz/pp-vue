@@ -21,7 +21,7 @@ const cancel = () => router.push({ name: 'program-dashboard' });
 <template>
     <v-container>
         <v-card color="transparent" elevation="0">
-            <v-card-title class="text-h4">Create New Program</v-card-title>
+            <v-card-title class="text-h4" color="accent">Create New Program</v-card-title>
             <span class="input-ph">Name</span>
             <v-text-field
                 v-model="program.name"
@@ -39,10 +39,11 @@ const cancel = () => router.push({ name: 'program-dashboard' });
                 <v-btn
                     variant="outlined"
                     primary
+                    color="accent"
                     @click.stop="createSaveProgram()"
                 >Save &amp; Add workouts</v-btn>
 
-                <v-btn color="white" @click.stop="cancel()">Cancel</v-btn>
+                <v-btn color="surface" @click.stop="cancel()">Cancel</v-btn>
             </v-card-actions>
         </v-card>
     </v-container>
