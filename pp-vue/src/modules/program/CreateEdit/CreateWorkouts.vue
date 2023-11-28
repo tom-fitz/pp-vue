@@ -5,17 +5,19 @@ import { useRoute } from 'vue-router';
 import { mdiPlus } from '@mdi/js';
 import { ref, computed } from 'vue';
 import { useUserStore } from '@/modules/user/store';
-import CreateWorkout from '@/components/CreateWorkout.vue'
+import CreateWorkout from '@/components/CreateWorkout.vue';
 
+const route = useRoute();
 const store = useProgramStore();
+const programId: string = route.params['id'].toString();
+store.getProgramById(programId);
+// const program = computed(() => store.programs.find((p: Program) => p.id === programId)).value ?? new Program();
+const program: Program = computed(() => store.getById(programId)).value;
+
 const userStore = useUserStore();
 userStore.listUsers();
 
-const route = useRoute();
-
-store.getProgramById(route.params['id'].toString());
-
-const program = computed(() => store.programs.find((p: Program) => p.id === route.params['id'])).value ?? new Program();
+console.log("program: ", program)
 
 const plusIcon = ref(mdiPlus);
 
@@ -33,6 +35,7 @@ const cancelSelection = (workout: Workout, weekIdx: number, dayIdx: number):void
 }
 
 const dialog = ref(false);
+const assignClientDialog = ref(false);
 
 const newWeek = () => {
     const dayNames = [['Sunday','sun'],['Monday','mon'],['Tuesday','tues'],['Wednesday','wed'],['Thursday','thur'],['Friday','fri'],['Saturday','sat']];
@@ -64,11 +67,22 @@ const openDialog = (w: number, d: number) => {
 }
 
 const saveWorkout = async (w: Workout) => {
-    w.programIds.push(program.id);
+    const progIds = [...w.programIds, programId]
+    w.programIds = progIds;
     await store.saveWorkout(w);
     await store.saveProgram(program);
     setActiveDay(0, 0);
 }
+
+const assignPatient = async () => {
+    program.uids = [selectedUser.value];
+    await store.saveProgram(program);
+    assignClientDialog.value = false;
+    selectedUser.value = '';
+}
+
+const selectedUser = ref();
+const valid = ref(false);
 </script>
 <template>
 <v-container class="bg-color main pa-10">
@@ -80,8 +94,9 @@ const saveWorkout = async (w: Workout) => {
         <v-col align="right">
             <v-btn 
                 variant="outlined"
-                primary
+                accent
                 class="mt-2"
+                @click="assignClientDialog = true"
             >Assign Patient</v-btn>
         </v-col>
     </v-row>
@@ -105,6 +120,11 @@ const saveWorkout = async (w: Workout) => {
                     <div class="pa-4">
                         <h3>{{ day.workout.name }}</h3>
                         <h6>{{ day.workout.warmup }}</h6>
+                        <div v-for="(ex) in day.workout.exercises" :key="ex.title">
+                            <p>{{ ex.title }}</p>
+                            <p>{{ ex.setsXReps }}</p>
+                        </div>
+                        <h6>{{ day.workout.cooldown }}</h6>
                     </div>
                     <v-row>
                         <v-col class="d-flex justify-center align-center">
@@ -141,7 +161,7 @@ const saveWorkout = async (w: Workout) => {
         <v-col class="pl-0">
             <v-btn 
                 variant="outlined"
-                secondary
+                accent
                 @click="newWeek()"
             >Save Program</v-btn>
         </v-col>
@@ -154,6 +174,45 @@ const saveWorkout = async (w: Workout) => {
         @update:model-value="closeDialog" 
         @update:save-workout="saveWorkout"
     />
+    <v-dialog
+        v-model="assignClientDialog"
+        activator="parent"
+        width="600"
+    >
+    <v-sheet class="bg-color">
+        <v-form v-model="valid" class="ma-6 pa-4" style="min-width:350px;">
+            <v-row>
+                <v-col class="ma-0 pa-0">
+                    <v-select 
+                        label="Select client" 
+                        :items="userStore.userList"
+                        item-value="id"
+                        item-title="displayName"
+                        v-model="selectedUser"
+                    ></v-select>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col>
+                    <v-btn
+                        @click.stop="assignPatient()"
+                        variant="flat"
+                        primary
+                        block
+                    >Assign</v-btn>
+                </v-col>
+                <v-col>
+                    <v-btn
+                        @click.stop="assignClientDialog = false"
+                        variant="outlined"
+                        primary
+                        block
+                    >Close</v-btn>
+                </v-col>
+            </v-row>
+        </v-form>
+    </v-sheet>
+    </v-dialog>
 </v-container>
 </template>
 <style scoped>
@@ -201,6 +260,7 @@ const saveWorkout = async (w: Workout) => {
 .bg-color {
     background-color:rgb(var(--v-theme-secondary));
 }
+
 .truncate {
   white-space: nowrap;
   overflow: hidden;

@@ -50,7 +50,18 @@ export class Week {
     constructor(
         public position: number = 0,
         public days: Day[] = []
-    ){}
+    ){
+        this.days = this.newWeek()
+    }
+
+    newWeek(): Day[] {
+        const dayNames = [['Sunday','sun'],['Monday','mon'],['Tuesday','tues'],['Wednesday','wed'],['Thursday','thur'],['Friday','fri'],['Saturday','sat']];
+        const resp: Day[] = [];
+        dayNames.forEach((x: string[], idx: number) => {
+            resp.push(new Day(idx, x[0], x[1]))
+        });
+        return resp;
+    }
 }
 
 export class Program {
@@ -58,14 +69,16 @@ export class Program {
         public id: string = "",
         public name: string = "",
         public description: string = "",
-        public uid: string = "",
+        public uids: string[] = [],
         public notes: string = "",
         public exercises: Exercise[] = [new Exercise()],
         public daysCompleted: DayCompletion[] = [new DayCompletion()],
         public duration: number = 0,
         public completionTitle: string = "",
-        public weeks: Week[] = []
-    ){}
+        public weeks: Week[] = [new Week()]
+    ){
+        this.uids = []
+    }
 
     create(): Program {
         const newPro = new Program();

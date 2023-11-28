@@ -24,7 +24,7 @@ const createProgram = async (program: Program): Promise<string> => {
     const db = getDatabase();
     const newPostKey = push(child(ref(db), 'programs')).key;
     program.daysCompleted = Object.assign({}, program.daysCompleted);
-    await set(ref(db, `programs/${program.uid}/${newPostKey}`), Object.assign({}, program));
+    // await set(ref(db, `programs/${program.uid}/${newPostKey}`), Object.assign({}, program));
     return newPostKey ?? '';
 };
 

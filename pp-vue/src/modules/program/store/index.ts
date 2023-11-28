@@ -9,12 +9,16 @@ export const useProgramStore = defineStore("programStore", {
         loading: false,
         programs: [] as Program[],
         templates: [] as Program[],
-        workouts: [] as Workout[]
+        workouts: [] as Workout[],
+        currentProgram: new Program() as Program,
     }),
     getters: {
-        getPrograms: (state) => state.programs,
+        getPrograms: (state): Program[] => state.programs,
     },
     actions: {
+        getById (id: string): Program {
+            return this.programs.find((p: Program) => p.id === id) ?? new Program();
+        },
         async getAllPrograms (): Promise<void> {
             this.loading = true;
             try {
@@ -77,14 +81,17 @@ export const useProgramStore = defineStore("programStore", {
                 this.loading = false;
             }
         },
-        async getProgramById (id: string): Promise<void> {
+        async getProgramById (id: string): Promise<Program> {
             this.loading = true;
             try {
                 const program = await api.getProgramById(id);
+                this.currentProgram = program;
                 this.programs.push(program);
                 this.programs = [...this.programs];
+                return program;
             } catch (err) {
                 this.errorMsg = err;
+                return new Program();
             } finally {
                 this.loading = false;
             }

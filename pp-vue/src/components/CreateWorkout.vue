@@ -46,9 +46,9 @@ const saveWorkout = () => {
         const storeEx = exerciseStore.getExerciseByName(ex.name);
         console.log("store ex: ", storeEx);
     })
-    // emits('update:saveWorkout', wo);
-    // emits('update:modelValue', false);
-    // close();
+    emits('update:saveWorkout', wo);
+    emits('update:modelValue', false);
+    close();
 };
 
 const plusIcon = ref(mdiPlus);

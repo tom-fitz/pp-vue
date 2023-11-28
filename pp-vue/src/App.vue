@@ -103,7 +103,7 @@ console.log("route name: ", route.name)
     </v-navigation-drawer>
     </template>
     <template v-if="!excludeList.some((name: string) => name === route.name)">
-      <v-navigation-drawer permanent color="#344257">
+      <v-navigation-drawer permanent color="secondary">
         <v-row class="ma-0">
           <v-col class="mt-8 mb-0 pl-8 pb-0 d-flex justify-left align-left">
             <h4 class="menu-header">{{ currDay }}</h4>
@@ -112,6 +112,11 @@ console.log("route name: ", route.name)
         <v-row class="ma-0">
           <v-col class="ma-0 pa-0 pl-8 d-flex justify-left align-left">
             <h3 class="menu-header">{{ currDayDisplay }}</h3>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="pl-8 pr-8">
+            <v-divider :thickness="2" color="surface"></v-divider>
           </v-col>
         </v-row>
       </v-navigation-drawer>
